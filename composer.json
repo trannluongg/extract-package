@@ -1,0 +1,30 @@
+{
+    "name": "luongtv/extract",
+    "description": "Package extract pdf file.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "TranLuong",
+            "email": "luongloan1504@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7",
+        "illuminate/support": "^5.5|^6",
+        "dompdf/dompdf": "^0.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Luongtv\\Extract\\":  "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Luongtv\\Extract\\ExtractServiceProvider"
+            ]
+        }
+    }
+}
