@@ -7,4 +7,5 @@
  */
 Route::group(['namespace' => 'Luongtv\Extract\Http\Controllers'], function (){
     Route::get('/extract', 'ExtractController@extract');
+    Route::get('/extract-pdf', 'ExtractController@generate');
 });

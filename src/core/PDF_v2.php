@@ -87,8 +87,8 @@ class PDF_v2{
      * @param string $encoding Not used yet
      * @return static
      */
-    public function loadHTML($string, $encoding = null){
-        $string = $this->convertEntities($string);
+    public function loadHTML($string, $filename = null, $encoding = null){
+        $string = $this->convertEntities($string, $filename);
         $this->dompdf->loadHtml($string, $encoding);
         $this->rendered = false;
         return $this;
@@ -233,14 +233,61 @@ class PDF_v2{
     }
 
 
-    protected function convertEntities($subject){
+    protected function convertEntities($subject, $filename){
         $entities = array(
             '€' => '&#0128;',
             '£' => '&pound;',
+            '' => '<i class="fas fa-angle-double-right"></i>',
+            '' => '<i class="fas fa-circle"></i>',
+            '' => '<i class="far fa-bookmark"></i>',
+            '' => '<i class="fas fa-phone-alt"></i>',
+            '' => '<i class="fas fa-envelope"></i>',
+            '' => '<i class="fas fa-map-marker-alt"></i>',
+            '' => '<i class="far fa-calendar-alt"></i>',
+            '' => '<i class="fas fa-mobile-alt"></i>',
+            '' => '<i class="fas fa-chart-bar"></i>',
+            ''=>'<i class="fas fa-folder"></i>',
+            '' => '<i class="fas fa-briefcase"></i>',
+            '' => '<i class="fas fa-graduation-cap"></i>',
+            '' => '<i class="fas fa-laptop"></i>',
+            '' => '<i class="fas fa-check-circle"></i>',
+            '' => '<i class="fas fa-headphones"></i>',
+            '' => '<i class="far fa-circle"></i>',
+            '' => '<i class="fas fa-envelope"></i>',
+            '' => '<i class="fas fa-info"></i>',
+            '' => '<i class="fas fa-user"></i>',
+            '' => '<i class="far fa-calendar-alt"></i>',
+            '' => '<i class="fas fa-road"></i>',
+            '' => '<i class="far fa-lightbulb"></i>',
+            '' => '<i class="fas fa-book"></i>',
+            '' => '<i class="fas fa-trophy"></i>',
+            '' => '<i class="fas fa-star"></i>',
+            '' => '<i class="far fa-file-alt"></i>',
+            '' => '<i class="fas fa-link"></i>',
+            '' => '<i class="fas fa-globe-asia"></i>',
+            '' => '<i class="fas fa-rocket"></i>',
+            '' => '<i class="fas fa-cog"></i>',
+            '' => '<i class="fas fa-check-square"></i>',
+            '' => '<i class="fas fa-check-square"></i>',
+            '' => '<i class="fas fa-globe-asia"></i>',
+            '' => '<i class="fas fa-briefcase"></i>',
+            '' => '<i class="fab fa-gratipay"></i>',
+            '' => '<i class="fas fa-male"></i>',
+            '' => '<i class="fas fa-chart-pie"></i>',
+            '●' => '<i class="fas fa-circle"></i>',
         );
 
         foreach($entities as $search => $replace){
             $subject = str_replace($search, $replace, $subject);
+        }
+        if ($filename != null){
+            $filename = storage_path('files/'.$filename);
+            unlink($filename);
+            if (!file_exists($filename)){
+                $my_file = fopen($filename, 'w');
+                fwrite($my_file, $subject);
+                fclose($my_file);
+            }
         }
         return $subject;
     }

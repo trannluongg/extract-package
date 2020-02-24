@@ -36,12 +36,11 @@ class ExtractServiceProvider extends IlluminateServiceProvider
 
     public function register()
     {
+        //load dompdf
         $configPath = __DIR__.'/core/config/dompdf.php';
         $this->mergeConfigFrom($configPath, 'dompdf');
-
         $this->app->bind('dompdf.options', function(){
             $defines = $this->app['config']->get('dompdf.defines');
-
             if ($defines) {
                 $options = [];
                 foreach ($defines as $key => $value) {
@@ -51,23 +50,21 @@ class ExtractServiceProvider extends IlluminateServiceProvider
             } else {
                 $options = $this->app['config']->get('dompdf.options');
             }
-
             return $options;
-
         });
-
         $this->app->bind('dompdf', function() {
-
             $options = $this->app->make('dompdf.options');
             $dompdf = new Dompdf($options);
             $dompdf->setBasePath(realpath(base_path('public')));
-
             return $dompdf;
         });
         $this->app->alias('dompdf', Dompdf::class);
-
         $this->app->bind('dompdf.wrapper', function ($app) {
             return new PDF_v2($app['dompdf'], $app['config'], $app['files'], $app['view']);
         });
+        //load helper
+        foreach (glob(__DIR__.'/core/helpers/*.php') as $filename){
+            require_once $filename;
+        }
     }
 }
