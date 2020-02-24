@@ -1,23 +1,28 @@
-#Convert PDF to HTML, HTML to PDF, HTML to Image For Laravel
+**Convert PDF to HTML, HTML to PDF, HTML to Image For Laravel**
+
 Require this package in your composer.json and update composer.
-```php
+```
     composer require luongtv/extract
 ```
-#Installation
+**Installation**
+
 After updating composer, add the ServiceProvider to the providers array in config/app.php
 
 ```php
     Luongtv\Extract\ExtractServiceProvider::class
 ```
-###Laravel 5.x:
-#I. PDF to HTML
-###1. Install Poppler-Utils
+**Laravel 5.x:**
+
+**I. PDF to HTML**
+
+**1. Install Poppler-Utils**
+
 **Debian/Ubuntu**
-```php
+```
     sudo apt-get install poppler-utils
 ```
 **Mac OS X**
-```php
+```
     brew install poppler
 ```
 **Window**
@@ -25,9 +30,11 @@ After updating composer, add the ServiceProvider to the providers array in confi
 For those who need this package in windows, there is a way. First download poppler-utils for windows here http://blog.alivate.com.au/poppler-windows/. And download the latest binary.
 
 After download it, extract it.
-###2. We need to know where is utilities
+
+**2. We need to know where is utilities**
+
 **Debian/Ubuntu**
-```php
+```
     $ whereis pdftohtml
     pdftohtml: /usr/bin/pdftohtml
     
@@ -44,12 +51,15 @@ After download it, extract it.
 **Window**
 
 Go in extracted directory. There will be a directory called ```bin```. We will need this one.
-###3. PHP Configuration with shell access enabled
-###Usage
+
+**3. PHP Configuration with shell access enabled**
+
+**Usage**
 
 Create files folder in storage folder
 
 **Example**
+
 ```php
     use Luongtv\Extract\core\PdfToHtml;
 
@@ -73,6 +83,7 @@ Create files folder in storage folder
     $pdf->generateHTML($name_file, $id);
 ```
 **Full options**
+
 ```php
     $full_settings = [
         'pdftohtml_path' => '/usr/bin/pdftohtml', // path to pdftohtml
@@ -97,8 +108,10 @@ Create files folder in storage folder
         ]
     ]
 ```
-#II. HTML to PDF
-###Usage
+**II. HTML to PDF**
+
+**Usage**
+
 **Example**
 ```php
     use Luongtv\Extract\core\HtmlToPdf;
@@ -111,8 +124,10 @@ Create files folder in storage folder
     $pdf_generate =  $html->generatePDF($file, $option);
     return $pdf_generate;
 ```
+
 **Full options**
-```php
+
+```
     rootDir: "{app_directory}/vendor/dompdf/dompdf"
     tempDir: "/tmp" (available in config/dompdf.php)
     fontDir: "{app_directory}/storage/fonts/" (available in config/dompdf.php)
@@ -142,8 +157,13 @@ Create files folder in storage folder
     adminUsername: "user"
     adminPassword: "password"
 ```
-#III. HTML to IMAGE
-###Usage
+
+**III. HTML to IMAGE**
+
+**Usage**
+
 Copy the html file path under the ```$id .'_image.html ' ($id generated in pdf to html)``` structure on the browser and run the file. Turn on F12, switch to the console tab will have the image as a base64
-#IV. License
+
+**IV. License**
+
 This DOMPDF Wrapper for Laravel is open-sourced software licensed under the MIT license
