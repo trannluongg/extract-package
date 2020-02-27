@@ -23,7 +23,7 @@ class DocToPdf
         $readOnly = true;
         $wdOpenFormatAuto = 0;
         $msoEncodingAutoDetect = 50001;
-        $word->Documents->Open($path_doc, false, $readOnly, false, "", "", true,"", "", $wdOpenFormatAuto, $msoEncodingAutoDetect);
+        $word->Documents->OpenNoRepairDialog($path_doc, false, $readOnly, false, "", "", true,"", "", $wdOpenFormatAuto, $msoEncodingAutoDetect);
         $word->ActiveDocument->ExportAsFixedFormat($path_pdf, 17, false, 0, 0, 0, 0, 7, true, true, 2, true, true, false);
         $word->Quit(false);
     }
