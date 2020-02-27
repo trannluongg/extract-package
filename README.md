@@ -163,6 +163,7 @@ Create files folder in storage folder
 **Usage**
 
 Copy the html file path under the ```$id .'_image.html ' ($id generated in pdf to html)``` structure on the browser and run the file. Turn on F12, switch to the console tab will have the image as a base64
+
 **IV. DOC to PDF**
 
 **Usage**
