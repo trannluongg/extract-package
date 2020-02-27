@@ -9,21 +9,27 @@
 namespace Luongtv\Extract\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Luongtv\Extract\core\DocToPdf;
 use Luongtv\Extract\core\HtmlToPdf;
 use Luongtv\Extract\core\PdfToHtml;
 
 class ExtractController extends Controller
 {
+    public function convertDocToPdf(){
+        $doc = new DocToPdf();
+        $doc->generatePDF('test.doc', 'test.pdf');
+        exit('Convert Doc to Pdf successfully');
+    }
     public function extract()
     {
-        $name_file = 'cv24';
-        $file = storage_path("cv/".$name_file.".pdf");
+        $name_file = 'test';
+        $file = $name_file.'.pdf';
 
         $id = uniqid();
 
         $options = [
-            'pdftohtml_path' => 'C:\Users\ASUS\Desktop\poppler-0.68.0\bin\pdftohtml.exe',
-            'pdfinfo_path' => 'C:\Users\ASUS\Desktop\poppler-0.68.0\bin\pdfinfo.exe',
+            'pdftohtml_path' => 'path pdftohtml.exe',
+            'pdfinfo_path' => 'path pdfinfo.exe',
             'generate' => [
                 'singlePage' => false,
                 'imageJpeg' => true,

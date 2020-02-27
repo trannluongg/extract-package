@@ -275,6 +275,16 @@ class PDF_v2{
             '' => '<i class="fas fa-male"></i>',
             '' => '<i class="fas fa-chart-pie"></i>',
             '●' => '<i class="fas fa-circle"></i>',
+            '➢' => '<i class="fas fa-long-arrow-alt-right"></i>',
+            '❖' => '<i class="fas fa-angle-right"></i>',
+            '' => '<i class="fas fa-envelope"></i>',
+            '' => '<i class="fas fa-mobile-alt"></i>',
+            '✓' => '<i class="fas fa-check"></i>',
+            '' => '<i class="fas fa-book-open"></i>',
+            '' => '<i class="fas fa-music"></i>',
+            '' => '<i class="fas fa-laptop"></i>',
+            '' => '<i class="fas fa-map-marker-alt"></i>',
+            '' => '<i class="fas fa-male"></i>',
         );
 
         foreach($entities as $search => $replace){

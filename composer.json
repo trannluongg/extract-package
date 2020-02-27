@@ -18,7 +18,8 @@
     },
     "require-dev": {
         "ext-dom": "*",
-        "ext-gd": "*"
+        "ext-gd": "*",
+        "ext-com_dotnet": "*"
     },
     "autoload": {
         "psr-4": {

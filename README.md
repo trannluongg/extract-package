@@ -163,7 +163,32 @@ Create files folder in storage folder
 **Usage**
 
 Copy the html file path under the ```$id .'_image.html ' ($id generated in pdf to html)``` structure on the browser and run the file. Turn on F12, switch to the console tab will have the image as a base64
+**IV. DOC to PDF**
 
-**IV. License**
+**Usage**
+
+Refer to https://www.php.net/manual/en/book.com.php
+
+**Requirement**
+
+Add to php.ini
+
+```
+   [PHP_COM_DOTNET]
+   extension=php_com_dotnet.dll 
+```
+
+**Example**
+
+```php
+    use Luongtv\Extract\core\DocToPdf;
+    
+    //test.doc is a convert to pdf file.
+    //test.pdf is the path to save the test.pdf file
+    $doc = new DocToPdf();
+    $doc->generatePDF('test.doc', 'test.pdf');  
+```
+
+**V. License**
 
 This DOMPDF Wrapper for Laravel is open-sourced software licensed under the MIT license
