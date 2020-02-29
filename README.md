@@ -8,9 +8,45 @@ Require this package in your composer.json and update composer.
 
 After updating composer, add the ServiceProvider to the providers array in config/app.php
 
+**1. Laravel**
+
 ```php
     Luongtv\Extract\ExtractServiceProvider::class
 ```
+
+**2. Lumen**
+
+```php
+    $app->register(\Luongtv\Extract\ExtractServiceProvider::class);
+```
+
+**Configuration**
+
+**1. Laravel**
+
+```
+    php artisan vendor:publish --provider="Luongtv\Extract\ExtractServiceProvider"
+```
+
+**2. Lumen**
+
+* **Step one**
+```
+    composer require laravelista/lumen-vendor-publish
+```
+* **Step two**
+
+    To be able to use it you have to add it to your ```app/Console/Kernel.php``` file:
+    
+    ```
+    protected $commands = [
+        \Laravelista\LumenVendorPublish\VendorPublishCommand::class
+    ];
+    ```
+* **Last step**
+    ```
+    php artisan vendor:publish --provider="Luongtv\Extract\ExtractServiceProvider"
+    ```
 **Laravel 5.x:**
 
 **I. PDF to HTML**
