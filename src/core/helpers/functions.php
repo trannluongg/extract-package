@@ -14,7 +14,6 @@
 if (!function_exists('regex')){
     function regex($string){
         $string = preg_replace('/(\s+)?(?:https?:\/\/)?(?:www\.)?(facebook|fb)\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-<>]*\/)*([\w\-\.<>]*)[\?a-z0-9=\s+\/<>][^(\/p)]{1,}/', '[123cv.net protected]<', $string);
-        $string = preg_replace('/([0-9]|\s){1,4}(\/|-)[0-9]{1,2}(\/|-)[0-9\s]{4,}\s?/', '[123cv.net protected]', $string);
         $string = preg_replace('/([a-z0-9]|\s+)(\.?[a-z0-9]){5,}@[a-z]{3,}\.[a-z\s+\.\/<>][^(<\/p)]{2,}/', '[123cv.net protected]', $string);
         $string = preg_replace('/(\s+|0|\:|(\(*\+[0-9]{1,2}\)*))\s*[0-9\.\s+]{9,}/', '[123cv.net protected]', $string);
         $string = preg_replace('~(?:(?:https://)|(?:http://)|(?:www\.))(?![^" ]*(?:jpg|png|gif|"))[^" <>]+~', '[123cv.net protected]', $string);
@@ -87,7 +86,7 @@ if (!function_exists('generateHeaderHTML')){
                 <head>
                 <title>' . $title . '</title>
                 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-                <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css" integrity="sha384-v8BU367qNbs/aIZIxuivaU55N5GPF89WBerHoGA4QTcbUjYiLQtKdrfXnqAcXyTv" crossorigin="anonymous">
+                <link rel="stylesheet" href="'.public_path('fontawesome-free-5.12.1-web/css/all.css').'">
                 <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&amp;subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese" rel="stylesheet">
                 <style type="text/css">
                     body{font-family: "Roboto", sans-serif}
@@ -99,7 +98,7 @@ if (!function_exists('generateHeaderHTML')){
                 <head>
                     <title>'.$title.'</title>
                     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-                    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css" integrity="sha384-v8BU367qNbs/aIZIxuivaU55N5GPF89WBerHoGA4QTcbUjYiLQtKdrfXnqAcXyTv" crossorigin="anonymous">
+                    <link rel="stylesheet" href="'.public_path('fontawesome-free-5.12.1-web/css/all.css').'">
                     <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.js"></script>
                     <style type="text/css">
@@ -151,12 +150,14 @@ if (!function_exists('closeHeader')){
         if ($flag === true){
             return '
                 </style>
+                <script src="'.public_path('fontawesome-free-5.12.1-web/js/all.js').'"></script>
                 </head>
                 <body>
                 ';
         }else{
             return '
                 </style>
+                <script src="'.public_path('fontawesome-free-5.12.1-web/js/all.js').'"></script>
                 </head>
                 <body id="body">
                 ';

@@ -77,11 +77,7 @@ class PdfToHtml extends Pdf
                 $row_page_v2 = $row_page;
                 if(preg_match('/<img\s.*?\bsrc="(.*?)".*?>/si', $row_page, $matches)){
                     $image = storage_path("files/".$id. "/" .$name_file."00".$key.".jpg");
-                    if ($key < count($content_page)){
-                        removeBorderImage($image, $id, $name_file."00".$key.".jpg", 2);
-                    }else{
-                        removeBorderImage($image, $id, $name_file."00".$key.".jpg", 50);
-                    }
+                    removeBorderImage($image, $id, $name_file."00".$key.".jpg", 2);
                     $img = str_replace($matches[1], $image, $matches[0]);
                     $row_page = str_replace($matches[0], $img, $row_page);
                 }
