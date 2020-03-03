@@ -24,15 +24,11 @@ class ExtractServiceProvider extends IlluminateServiceProvider
     public function boot(){
         $this->loadRoutesFrom(__DIR__. '/routes/web.php');
         $this->loadViewsFrom(__DIR__ .'/views', 'extract');
-        $this->mergeConfigFrom(__DIR__ . '/core/config/extract.php','extract');
         $this->publishes([
-            __DIR__ . '/core/config/extract.php' => config_path('extract.php'),
-            __DIR__ . '/core/vendor/fontawesome-free-5.12.1-web' => public_path('fontawesome-free-5.12.1-web')
+            __DIR__ . '/core/vendor/fontawesome-free-5.12.1-web' => public_path('fontawesome-free-5.12.1-web'),
+            __DIR__ . '/core/config/dompdf.php' => config_path('dompdf.php'),
+            __DIR__ . '/core/vendor/fonts' => storage_path('fonts')
         ]);
-        if (! $this->isLumen()) {
-            $configPath = __DIR__.'/core/config/dompdf.php';
-            $this->publishes([$configPath => config_path('dompdf.php')], 'config');
-        }
     }
 
     public function register()

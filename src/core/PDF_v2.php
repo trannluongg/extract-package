@@ -87,8 +87,8 @@ class PDF_v2{
      * @param string $encoding Not used yet
      * @return static
      */
-    public function loadHTML($string, $filename = null, $encoding = null){
-        $string = $this->convertEntities($string, $filename);
+    public function loadHTML($string, $path_file = null, $encoding = null){
+        $string = $this->convertEntities($string, $path_file);
         $this->dompdf->loadHtml($string, $encoding);
         $this->rendered = false;
         return $this;
@@ -233,7 +233,7 @@ class PDF_v2{
     }
 
 
-    protected function convertEntities($subject, $filename){
+    protected function convertEntities($subject, $path_file){
         $entities = array(
             '€' => '&#0128;',
             '£' => '&pound;',
@@ -290,11 +290,11 @@ class PDF_v2{
         foreach($entities as $search => $replace){
             $subject = str_replace($search, $replace, $subject);
         }
-        if ($filename != null){
-            $filename = storage_path('files/'.$filename);
-            unlink($filename);
-            if (!file_exists($filename)){
-                $my_file = fopen($filename, 'w');
+        if ($path_file != null){
+            $path_file = storage_path($path_file);
+            unlink($path_file);
+            if (!file_exists($path_file)){
+                $my_file = fopen($path_file, 'w');
                 fwrite($my_file, $subject);
                 fclose($my_file);
             }

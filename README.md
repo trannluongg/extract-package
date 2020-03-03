@@ -1,4 +1,4 @@
-**Convert PDF to HTML, HTML to PDF, HTML to Image For Laravel**
+**Convert PDF to HTML, HTML to PDF, DOC to PDF, HTML to Image For Laravel**
 
 Require this package in your composer.json and update composer.
 ```

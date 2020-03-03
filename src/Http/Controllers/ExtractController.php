@@ -25,7 +25,7 @@ class ExtractController extends Controller
         $name_file = 'test';
         $file = $name_file.'.pdf';
 
-        $id = uniqid();
+        $name_folder = uniqid();
 
         $options = [
             'pdftohtml_path' => 'path pdftohtml.exe',
@@ -38,10 +38,10 @@ class ExtractController extends Controller
                 'noFrames' => false,
             ],
             'clearAfter' => false,
-            'outputDir' => storage_path('files/'.$id),
+            'outputDir' => storage_path('files/'.$name_folder),
         ];
         $pdf = new PdfToHtml($file, $options);
-        $pdf->generateHTML($name_file, $id);
+        $pdf->generateHTML($name_file, 'files/'.$name_folder);
     }
 
     public function generate(){

@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: ASUS
- * Date: 24/2/2020
- * Time: 9:06 AM
+ * Date: 3/3/2020
+ * Time: 2:09 PM
  */
 
 namespace Luongtv\Extract\core;
@@ -11,7 +11,7 @@ namespace Luongtv\Extract\core;
 
 use Illuminate\Support\Facades\App;
 
-class PdfToHtml extends Pdf
+class PdfProtected extends Pdf
 {
     /**
      * PdfToHtml constructor.
@@ -24,22 +24,25 @@ class PdfToHtml extends Pdf
     }
 
     /**
-     * @param string $name_file
-     * @param string $path_file
+     * @param $name_file
+     * @param $path_tmp
      */
-    public function generateHTML($name_file = '', $path_file = ''){
+    public function pdfProtected($name_file, $path_tmp){
+        $path = 'files/'.date('Y') . '/' . date('m') . '/' . date('d');
+        createFolder($path);
+        $file_pdf_name = date('d_m_Y'). '__________' . uniqid();
+
         $pdf_info = $this->getInfo();
         $title = 'Xem CV';
         if (isset($pdf_info['title'])){
             $title = $pdf_info['title'];
         }
         $content_html = generateHeaderHTML($title);
-        $content_html_image = generateHeaderHTML($title, false);
         $content_page = $this->getHtml()->getAllPages();
         if (count($content_page) <= 1){
             $html_file = null;
-            if (file_exists(storage_path($path_file.'/'.$name_file.'.html'))) $html_file = storage_path($path_file.'/'.$name_file.'.html');
-            if (file_exists(storage_path($path_file.'/'.$name_file.'-1.html'))) $html_file = storage_path($path_file.'/'.$name_file.'-1.html');
+            if (file_exists(storage_path($path_tmp.'/'.$name_file.'.html'))) $html_file = storage_path($path_tmp.'/'.$name_file.'.html');
+            if (file_exists(storage_path($path_tmp.'/'.$name_file.'-1.html'))) $html_file = storage_path($path_tmp.'/'.$name_file.'-1.html');
             $content_page = file_get_contents($html_file);
             if(preg_match_all('/<style\s.*?>(.*?)<\/style>/si', $content_page, $matches)){
                 if (count($matches[1]) == 2){
@@ -49,61 +52,41 @@ class PdfToHtml extends Pdf
                 }
                 $matches[1] = replaceCss($matches[1]);
                 $content_html .= $matches[1];
-                $content_html_image .= $matches[1];
             }
             $content_html .= closeHeader();
-            $content_html_image .= closeHeader(false);
-            $content_page_image = $content_page;
             if(preg_match('/<img\s.*?\bsrc="(.*?)".*?>/si', $content_page, $matches)){
-                $image = storage_path($path_file. "/" .$name_file."001.jpg");
-                removeBorderImage($image, $path_file, $name_file.'001.jpg',2,10);
+                $image = storage_path($path_tmp. "/" .$name_file."001.jpg");
+                removeBorderImage($image, $path_tmp, $name_file.'001.jpg', 2, 10);
                 $img = str_replace($matches[1], $image, $matches[0]);
                 $content_page = str_replace($matches[0], $img, $content_page);
             }
             if(preg_match('/<div\s.*?>(.*?)<\/div>/si', $content_page, $matches)){
                 $content_page = $matches[1];
             }
-            if(preg_match('/<div\s.*?>(.*?)<\/div>/si', $content_page_image, $matches)){
-                $content_page_image = $matches[1];
-            }
             $content_page = regex($content_page);
-            $content_page_image = regex($content_page_image);
             $content_html .= $content_page;
-            $content_html_image .= $content_page_image;
         }else{
             $content_html .= closeHeader();
-            $content_html_image .= closeHeader(false);
             foreach ($content_page as $key => $row_page){
-                $row_page_v2 = $row_page;
                 if(preg_match('/<img\s.*?\bsrc="(.*?)".*?>/si', $row_page, $matches)){
-                    $image = storage_path($path_file. "/" .$name_file."00".$key.".jpg");
-                    removeBorderImage($image, $path_file, $name_file."00".$key.".jpg", 2, 2);
+                    $image = storage_path($path_tmp ."/" .$name_file."00".$key.".jpg");
+                    removeBorderImage($image, $path_tmp, $name_file."00".$key.".jpg", 2,2);
                     $img = str_replace($matches[1], $image, $matches[0]);
                     $row_page = str_replace($matches[0], $img, $row_page);
                 }
                 if(preg_match('/<div\s.*?>(.*?)<\/div>/si', $row_page, $matches)){
                     $row_page = $matches[1];
                 }
-                if(preg_match('/<div\s.*?>(.*?)<\/div>/si', $row_page_v2, $matches)){
-                    $row_page_v2 = $matches[0];
-                }
                 $row_page = regex($row_page);
-                $row_page_v2 = regex($row_page_v2);
                 $content_html .= $row_page;
-                $content_html_image .= $row_page_v2;
             }
         }
         $content_html .= closeHTML();
-        $content_html_image .= generateScript();
-        $content_html_image .= closeHTML();
         $content_html = replaceAll($content_html);
-        $content_html_image = replaceAll($content_html_image);
-        $file_name = storage_path($path_file.'.html');
-        $file_name_image = storage_path($path_file.'_image.html');
-        createFile($file_name, $content_html);
-        createFile($file_name_image, $content_html_image);
         $pdf = App::make('dompdf.wrapper');
-        $pdf->loadHTML($content_html_image, $path_file.'_image.html');
-        exit('Generate Success');
+        $pdf->loadHTML($content_html);
+        $pdf->setOptions(['dpi' => 120]);
+        $pdf->save(storage_path($path.'/'.$file_pdf_name.'.pdf'));
+        deleteAll(storage_path($path_tmp));
     }
 }
