@@ -26,15 +26,16 @@ class PdfToHtml extends Pdf
     /**
      * @param string $name_file
      * @param string $path_file
+     * @param string $extension
      */
-    public function generateHTML($name_file = '', $path_file = ''){
+    public function generateHTML($name_file = '', $path_file = '', $extension = ''){
         $pdf_info = $this->getInfo();
         $title = 'Xem CV';
         if (isset($pdf_info['title'])){
             $title = $pdf_info['title'];
         }
-        $content_html = generateHeaderHTML($title);
-        $content_html_image = generateHeaderHTML($title, false);
+        $content_html = generateHeaderHTML($title, true, $extension);
+        $content_html_image = generateHeaderHTML($title, false, $extension);
         $content_page = $this->getHtml()->getAllPages();
         if (count($content_page) <= 1){
             $html_file = null;

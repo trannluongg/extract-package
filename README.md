@@ -115,7 +115,7 @@ Create files folder in storage folder
     //            'clearAfter' => false,
     //            'outputDir' => storage_path('files/'.$id),
     //        ];
-    $pdf = new PdfToHtml($file, $options);
+    $pdf = new PdfToHtml($file, $options, 'pdf');
     $pdf->generateHTML($name_file, $id);
 ```
 **Full options**
@@ -157,7 +157,7 @@ Create files folder in storage folder
     $option = [
         'dpi' => 120
     ];
-    $pdf_generate =  $html->generatePDF($file, $option);
+    $pdf_generate =  $html->generatePDF($path_file, $option);
     return $pdf_generate;
 ```
 

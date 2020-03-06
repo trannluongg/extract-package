@@ -95,11 +95,11 @@ if (!function_exists('createFile')){
 
 /**
  * Generate header HTML
- * @param $title
+ * @param $title, $flag, $extension
  * @return $string
  */
 if (!function_exists('generateHeaderHTML')){
-    function generateHeaderHTML($title, $flag = true){
+    function generateHeaderHTML($title, $flag = true, $extension = 'pdf'){
         if ($flag) {
             return '<!DOCTYPE html>
                 <html xmlns="http://www.w3.org/1999/xhtml" lang="vi" xml:lang="vi">
@@ -111,7 +111,7 @@ if (!function_exists('generateHeaderHTML')){
                      '.generateFont().'
                     body{font-family: "Roboto", sans-serif}
                     i.fas, i.far{margin-top: 2px}
-                    ';
+                    ' . (($extension == 'pdf') ? '' : 'p{line-height: 14px}');
         }else {
             return '<!DOCTYPE html>
                 <html xmlns="http://www.w3.org/1999/xhtml" lang="vi" xml:lang="vi">
@@ -125,7 +125,7 @@ if (!function_exists('generateHeaderHTML')){
                          '.generateFont().'
                         body{font-family: "Roboto", sans-serif;  background: white}
                         i.fas, i.far{margin-top: 2px}
-                        p{line-height: 20px}
+                        '. (($extension == 'pdf') ? 'p{line-height: 20px}' : 'p{line-height: 14px}').'
                         div{page-break-after: always; margin: 0 auto 15px auto}
         ';
         }

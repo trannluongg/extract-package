@@ -14,12 +14,12 @@ use Illuminate\Support\Facades\App;
 class HtmlToPdf
 {
     /**
-     * @param $file
+     * @param $path_file
      * @param array $options
      * @return mixed
      */
-    public function generatePDF($file, $options = []){
-        $file = storage_path('files/'.$file);
+    public function generatePDF($path_file, $options = []){
+        $file = storage_path($path_file);
         $file = file_get_contents($file);
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML($file);

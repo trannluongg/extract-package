@@ -26,8 +26,9 @@ class PdfProtected extends Pdf
     /**
      * @param $name_file
      * @param $path_tmp
+     * @param $extension
      */
-    public function pdfProtected($name_file, $path_tmp){
+    public function pdfProtected($name_file, $path_tmp, $extension){
         $path = 'files/'.date('Y') . '/' . date('m') . '/' . date('d');
         createFolder($path);
         $file_pdf_name = date('d_m_Y'). '__________' . uniqid();
@@ -37,7 +38,7 @@ class PdfProtected extends Pdf
         if (isset($pdf_info['title'])){
             $title = $pdf_info['title'];
         }
-        $content_html = generateHeaderHTML($title);
+        $content_html = generateHeaderHTML($title, true, $extension);
         $content_page = $this->getHtml()->getAllPages();
         if (count($content_page) <= 1){
             $html_file = null;
