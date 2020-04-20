@@ -23,7 +23,7 @@ class PdfToHtml extends Pdf
         parent::__construct($file, $options);
     }
 
-    public function checkPdf()
+    public function checkPdf($path_dir = '')
     {
         $content_page       = $this->getHtml()->getAllPages();
 
@@ -56,6 +56,9 @@ class PdfToHtml extends Pdf
                 }
             }
         }
+
+        deleteAll($path_dir);
+
         if ($checkPdf == $count_page) return true;
 
         return false;

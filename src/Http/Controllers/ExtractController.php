@@ -29,9 +29,10 @@ class ExtractController extends Controller
 
         $name_folder = uniqid();
 
+        $output_dir = storage_path('files/'.$name_folder);
         $options_check = [
-            'pdftohtml_path' => 'pdftohtml.exe',
-            'pdfinfo_path' => 'pdfinfo.exe',
+            'pdftohtml_path' => 'C:\Users\ASUS\Desktop\poppler-0.68.0\bin\pdftohtml.exe',
+            'pdfinfo_path' => 'C:\Users\ASUS\Desktop\poppler-0.68.0\bin\pdfinfo.exe',
             'generate' => [
                 'singlePage' => false,
                 'imageJpeg' => true,
@@ -39,10 +40,13 @@ class ExtractController extends Controller
                 'zoom' => 1.5 . ' -hidden -nodrm',
                 'noFrames' => false,
             ],
-            'clearAfter' => false
+            'clearAfter' => false,
+            'outputDir' => $output_dir
         ];
         $pdf = new PdfToHtml($file, $options_check);
-        $checkPdf = $pdf->checkPdf();
+
+        $checkPdf = $pdf->checkPdf($output_dir);
+
         if ($checkPdf)
         {
             $pdfOCR = new PdfOCR();
@@ -54,13 +58,11 @@ class ExtractController extends Controller
             {
                 echo $e;
             }
-            $options_check['outputDir'] = storage_path('files/'.$name_folder);
             $pdfProtected = new PdfProtected($file, $options_check);
-            $pdfProtected->pdfProtected('cv1.ocr', storage_path('files/'.$name_folder), true);
+            $pdfProtected->pdfProtected('cv1.ocr', $output_dir, true);
         }else{
-            $options_check['outputDir'] = storage_path('files/'.$name_folder);
             $pdfProtected = new PdfProtected($file, $options_check);
-            $pdfProtected->pdfProtected($name_file, storage_path('files/'.$name_folder));
+            $pdfProtected->pdfProtected($name_file, $output_dir, true);
         }
     }
 
