@@ -225,7 +225,23 @@ Add to php.ini
     $doc = new DocToPdf();
     $doc->generatePDF('test.doc', 'test.pdf');  
 ```
+**IV. PDF OCR**
+
+**Usage**
+
+Install OCRmyPDF : https://ocrmypdf.readthedocs.io/en/latest/
+
+**Example**
+
+```php
+    use Luongtv\Extract\core\PdfOCR;
+        
+    //test.pdf is a convert to path pdf file.
+    //test.ocr.pdf is the path pdf file to ouput
+    $pdfOCR = new PdfOCR();
+    $pdfOCR->generatePdfOCR('test.pdf', 'test.ocr.pdf'); 
+```
 
 **V. License**
 
-This DOMPDF Wrapper for Laravel is open-sourced software licensed under the MIT license
+This Extract Pdf for Laravel is open-sourced software licensed under the MIT license

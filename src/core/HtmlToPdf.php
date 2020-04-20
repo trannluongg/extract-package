@@ -19,8 +19,7 @@ class HtmlToPdf
      * @return mixed
      */
     public function generatePDF($path_file, $options = []){
-        $file = storage_path($path_file);
-        $file = file_get_contents($file);
+        $file = file_get_contents($path_file);
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML($file);
         $pdf->setOptions($options);
