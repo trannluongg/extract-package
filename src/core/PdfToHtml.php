@@ -23,7 +23,12 @@ class PdfToHtml extends Pdf
         parent::__construct($file, $options);
     }
 
-    public function checkPdf($path_dir = '')
+    /**
+     * @param string $path_tmp
+     * @param string $name_file
+     * @return bool
+     */
+    public function checkPdf($path_tmp = '', $name_file = '')
     {
         $content_page       = $this->getHtml()->getAllPages();
 
@@ -33,31 +38,23 @@ class PdfToHtml extends Pdf
 
         if ($count_page <= 1)
         {
-            if (preg_match('/<div\s.*?>(.*?)<\/div>/si', $content_page[1], $matches))
-            {
-                $image = $matches[1];
+            $html_file = '';
 
-                if (preg_match('/<img\s.*?>/si', $image, $matches_image))
-                {
-                    $checkPdf++;
-                }
-            }
+            if (file_exists($path_tmp . '/' . $name_file . '.html')) $html_file = $path_tmp . '/' . $name_file . '.html';
+            if (file_exists($path_tmp . '/' . $name_file . '-1.html')) $html_file = $path_tmp . '/' . $name_file . '-1.html';
+
+            $content_page = file_get_contents($html_file);
+
+            $checkPdf = $this->checkOnlyImage($content_page, $checkPdf);
+
         }else{
             foreach ($content_page as $key => $row_page)
             {
-                if (preg_match('/<div\s.*?>(.*?)<\/div>/si', $row_page, $matches))
-                {
-                    $image = $matches[1];
-                    if (preg_match('/<img\s.*?>/si', $image, $matches_image))
-                    {
-                        $image = str_replace($matches_image[0], '', $image);
-                        if (trim($image) == '') $checkPdf++;
-                    }
-                }
+                $checkPdf = $this->checkOnlyImage($row_page, $checkPdf);
             }
         }
 
-        deleteAll($path_dir);
+        deleteAll($path_tmp);
 
         if ($checkPdf == $count_page) return true;
 
@@ -111,5 +108,20 @@ class PdfToHtml extends Pdf
         $pdf->loadHTML($content_html_image, $path_file . '_image.html');
 
         exit('Generate Success');
+    }
+
+    private function checkOnlyImage($content = '', $number_of_check = 0)
+    {
+        if (preg_match('/<div\s.*?>(.*?)<\/div>/si', $content, $matches))
+        {
+            $image = $matches[1];
+            if (preg_match('/<img\s.*?>/si', $image, $matches_image))
+            {
+                $image = str_replace($matches_image[0], '', $image);
+                if (trim($image) == '') $number_of_check++;
+            }
+        }
+
+        return $number_of_check;
     }
 }

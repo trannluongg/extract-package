@@ -24,7 +24,7 @@ class ExtractController extends Controller
     }
     public function extract()
     {
-        $name_file = 'cv7';
+        $name_file = 'cv8';
         $file = storage_path('cv/'.$name_file.'.pdf');
 
         $name_folder = uniqid();
@@ -45,7 +45,7 @@ class ExtractController extends Controller
         ];
         $pdf = new PdfToHtml($file, $options_check);
 
-        $checkPdf = $pdf->checkPdf($output_dir);
+        $checkPdf = $pdf->checkPdf($output_dir, $name_file);
 
         if ($checkPdf)
         {
