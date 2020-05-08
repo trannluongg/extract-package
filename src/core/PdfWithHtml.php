@@ -1,6 +1,6 @@
 <?php
 
-namespace Luongtv\Extract\core;
+namespace WorkableCV\Extract\core;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -16,7 +16,7 @@ use Illuminate\Http\Response;
  * @package laravel-dompdf
  * @author Barry vd. Heuvel
  */
-class PDF_v2
+class PdfWithHtml
 {
 
     /** @var Dompdf */
@@ -197,6 +197,47 @@ class PDF_v2
             '' => '<i class="fas fa-laptop"></i>',
             '' => '<i class="fas fa-map-marker-alt"></i>',
             '' => '<i class="fas fa-male"></i>',
+            '' => '<i class="fas fa-check-circle"></i>',
+            '' => '<i class="fas fa-user"></i>',
+            '' => '<i class="fas fa-map-marker-alt"></i>',
+            '' => '<i class="fas fa-mobile-alt"></i>',
+            '' => '<i class="fas fa-bars"></i>',
+            '' => '<i class="far fa-envelope"></i>',
+            '' => '<i class="fas fa-users"></i>',
+            '' => '<i class="fas fa-pencil-alt"></i>',
+            '' => '<i class="fas fa-award"></i>',
+            '' => '<i class="fas fa-atom"></i>',
+            '' => '<i class="far fa-star"></i>',
+            '' => '<i class="fas fa-check"></i>',
+            '' => '<i class="fas fa-calendar-day"></i>',
+            '' => '<i class="fas fa-user-edit"></i>',
+            '' => '<i class="fas fa-user-tag"></i>',
+            '' => '<i class="fas fa-user-graduate"></i>',
+            '' => '<i class="fas fa-id-card-alt"></i>',
+            '' => '<i class="fas fa-hand-holding-heart"></i>',
+            '' => '<i class="fas fa-user-edit"></i>',
+            '' => '<i class="fas fa-language"></i>',
+            '' => '<i class="fas fa-briefcase"></i>',
+            '' => '<i class="fas fa-user-tie"></i>',
+            '' => '<i class="fas fa-phone-alt"></i>',
+            '' => '<i class="fas fa-map-marker-alt"></i>',
+            '◼' => '<i class="fas fa-square"></i>',
+            '' => '<i class="far fa-square"></i>',
+            '' => '<i class="fas fa-calendar-day"></i>',
+            '' => '<i class="fas fa-map-marker-alt"></i>',
+            '' => '<i class="fas fa-circle"></i>',
+            '' => '<i class="fas fa-map-marker-alt"></i>',
+            '' => '<i class="far fa-money-bill-alt"></i>',
+            '' => '<i class="fas fa-info"></i>',
+            '' => '<i class="fas fa-bolt"></i>',
+            '' => '<i class="fas fa-volume-down"></i>',
+            '' => '<i class="fas fa-heart-broken"></i>',
+            '' => '<i class="fas fa-map-marker-alt"></i>',
+            '' => '<i class="fas fa-calendar-day"></i>',
+            '' => '<i class="fas fa-glasses"></i>',
+            '' => '<i class="fas fa-circle"></i>',
+            '' => '<i class="fas fa-user"></i>',
+            '' => '<i class="fas fa-university"></i>'
         );
 
         foreach ($entities as $search => $replace)

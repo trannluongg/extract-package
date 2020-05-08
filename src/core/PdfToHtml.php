@@ -1,12 +1,12 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: ASUS
+ * User: TranLuong
  * Date: 24/2/2020
  * Time: 9:06 AM
  */
 
-namespace Luongtv\Extract\core;
+namespace WorkableCV\Extract\core;
 
 
 use Illuminate\Support\Facades\App;
@@ -38,10 +38,7 @@ class PdfToHtml extends Pdf
 
         if ($count_page <= 1)
         {
-            $html_file = '';
-
-            if (file_exists($path_tmp . '/' . $name_file . '.html')) $html_file = $path_tmp . '/' . $name_file . '.html';
-            if (file_exists($path_tmp . '/' . $name_file . '-1.html')) $html_file = $path_tmp . '/' . $name_file . '-1.html';
+            $html_file = getFile($path_tmp, $name_file);
 
             $content_page = file_get_contents($html_file);
 
@@ -60,6 +57,7 @@ class PdfToHtml extends Pdf
 
         return false;
     }
+
     /**
      * @param string $name_file
      * @param string $path_file
@@ -79,9 +77,9 @@ class PdfToHtml extends Pdf
 
         $content_page       = $this->getHtml()->getAllPages();
 
-        $html_handle = handleHtmlAdvanced($content_page, $path_file, $name_file, $content_html, $content_html_image);
+        $html_handle        = handleHtmlAdvanced($content_page, $path_file, $name_file, $content_html, $content_html_image);
 
-        $content_html = $html_handle['html'];
+        $content_html       = $html_handle['html'];
 
         $content_html_image = $html_handle['html_image'];
 
@@ -110,6 +108,11 @@ class PdfToHtml extends Pdf
         exit('Generate Success');
     }
 
+    /**
+     * @param string $content
+     * @param int $number_of_check
+     * @return int
+     */
     private function checkOnlyImage($content = '', $number_of_check = 0)
     {
         if (preg_match('/<div\s.*?>(.*?)<\/div>/si', $content, $matches))
@@ -123,5 +126,77 @@ class PdfToHtml extends Pdf
         }
 
         return $number_of_check;
+    }
+
+    /**
+     * @param string $path_tmp
+     * @param string $name_file
+     * @return bool
+     */
+    public function checkExitsEmailPhone($path_tmp = '', $name_file = '')
+    {
+        $content_page       = $this->getHtml()->getAllPages();
+
+        $count_page         = count($content_page);
+
+        $check_exist = 0;
+
+        if ($count_page <= 1)
+        {
+            $html_file = getFile($path_tmp, $name_file);
+
+            $content_page = file_get_contents($html_file);
+
+            $check_exist = $this->regexEmailPhone($content_page, $check_exist);
+
+        }else{
+            foreach ($content_page as $key => $row_page)
+            {
+                $check_exist = $this->regexEmailPhone($row_page, $check_exist);
+            }
+        }
+
+        deleteAll($path_tmp);
+
+        if ($check_exist >= 1) return true;
+
+        return false;
+    }
+
+    /**
+     * @param string $content
+     * @param int $number_check
+     * @return int
+     */
+    private function regexEmailPhone($content = '', $number_check = 0)
+    {
+        if (preg_match('/<div\s.*?>(.*?)<\/div>/si', $content, $matches))
+        {
+            $content = $matches[1];
+
+            if (preg_match('/<img\s.*?>/si', $matches[0], $matches_image))
+            {
+                $content = str_replace($matches_image[0], '', $content);
+            }
+
+            if(preg_match('/([a-zA-Z0-9\[\]]|\s+)(\.?[a-zA-Z0-9\s\[\]_\/]){5,}@[a-zA-Z<>\s\.]{3,}\.[a-zA-Z\s+\.\/<>][^(<\/p)]{0,}/', $content,$matches_email))
+            {
+                $number_check++;
+            }
+
+            $content = handleHtmlEntities($content);
+
+            if(preg_match('/(\s+|0|\:|(\(*\+*[0-9]{1,2}\)*))\s*[0-9\.\s+]{8,}/', $content,$matches_phone))
+            {
+                $number_check++;
+            }
+
+            if(preg_match('/(0|(\(*\+[0-9]{1,2}\)*))\s*[0-9\.\-]{8,}/', $content,$matches_phone))
+            {
+                $number_check++;
+            }
+        }
+
+        return $number_check;
     }
 }

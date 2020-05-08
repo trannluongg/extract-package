@@ -2,7 +2,7 @@
 
 Require this package in your composer.json and update composer.
 ```
-    composer require luongtv/extract
+    composer require workable-cv/extract
 ```
 **Installation**
 
@@ -11,13 +11,13 @@ After updating composer, add the ServiceProvider to the providers array in confi
 **1. Laravel**
 
 ```php
-    Luongtv\Extract\ExtractServiceProvider::class
+    WorkableCV\Extract\ExtractServiceProvider::class
 ```
 
 **2. Lumen**
 
 ```php
-    $app->register(\Luongtv\Extract\ExtractServiceProvider::class);
+    $app->register(\WorkableCV\Extract\ExtractServiceProvider::class);
 ```
 
 **Configuration**
@@ -25,7 +25,7 @@ After updating composer, add the ServiceProvider to the providers array in confi
 **1. Laravel**
 
 ```
-    php artisan vendor:publish --provider="Luongtv\Extract\ExtractServiceProvider"
+    php artisan vendor:publish --provider="WorkableCV\Extract\ExtractServiceProvider"
 ```
 
 **2. Lumen**
@@ -45,7 +45,7 @@ After updating composer, add the ServiceProvider to the providers array in confi
     ```
 * **Last step**
     ```
-    php artisan vendor:publish --provider="Luongtv\Extract\ExtractServiceProvider"
+    php artisan vendor:publish --provider="WorkableCV\Extract\ExtractServiceProvider"
     ```
 **Laravel 5.x:**
 
@@ -97,7 +97,7 @@ Create files folder in storage folder
 **Example**
 
 ```php
-    use Luongtv\Extract\core\PdfToHtml;
+    use WorkableCV\Extract\core\PdfToHtml;
 
     $name_file = 'cv24';
     $file = $name_file . ".pdf";
@@ -150,7 +150,7 @@ Create files folder in storage folder
 
 **Example**
 ```php
-    use Luongtv\Extract\core\HtmlToPdf;
+    use WorkableCV\Extract\core\HtmlToPdf;
 
     $html = new HtmlToPdf();
     $file = 'test.html';
@@ -218,12 +218,17 @@ Add to php.ini
 **Example**
 
 ```php
-    use Luongtv\Extract\core\DocToPdf;
+    use WorkableCV\Extract\core\DocToPdf;
     
     //test.doc is a convert to pdf file.
     //test.pdf is the path to save the test.pdf file
     $doc = new DocToPdf();
-    $doc->generatePDF('test.doc', 'test.pdf');  
+    
+    //window
+    $doc->generatePDF('test.doc', 'test.pdf');
+    
+    //linux, masOs
+    $doc->generatePDFLinux('test.doc', 'test.pdf');
 ```
 **IV. PDF OCR**
 
@@ -231,15 +236,88 @@ Add to php.ini
 
 Install OCRmyPDF : https://ocrmypdf.readthedocs.io/en/latest/
 
+**Note**
+
+- Support to Linux, macOs. Not support window because related to permission.
+
 **Example**
 
 ```php
-    use Luongtv\Extract\core\PdfOCR;
+    use WorkableCV\Extract\core\PdfOCR;
         
     //test.pdf is a convert to path pdf file.
     //test.ocr.pdf is the path pdf file to ouput
     $pdfOCR = new PdfOCR();
-    $pdfOCR->generatePdfOCR('test.pdf', 'test.ocr.pdf'); 
+    $pdfOCR->pdfOCR('test.pdf', 'test.ocr.pdf'); 
+```
+
+**IV. PDF PROTECTED**
+
+**Note**
+
+- Before anyone can do this, you have to read through the above and install all the packages required above.
+
+- Support to Linux, macOs. Not support window because related to permission.
+
+- All config options are written in the extract.php file
+
+**Example**
+
+```php
+    use WorkableCV\Extract\core\PdfOCR;
+    use WorkableCV\Extract\core\PdfProtected;
+    use WorkableCV\Extract\core\PdfToHtml;
+        
+    $name_file = 'cv105';
+
+    $file      = storage_path('cv1/' . $name_file . '.pdf');
+
+    $options_check = config('extract.options_extract');
+
+    $pdf           = new PdfToHtml($file, $options_check);
+
+    $output_dir = config('extract.options_extract.outputDir');
+    
+    //Check pdf file scan from dom element or image
+    $checkPdf = $pdf->checkPdf($output_dir, $name_file);
+        
+    if ($checkPdf)
+    {
+        $pdfOCR = new PdfOCR();
+
+        $result_pdfOCR = $pdfOCR->pdfOCR($file);
+
+        if (!$result_pdfOCR) exit('File not convert. Try again');
+
+        $pdfProtected = new PdfProtected($result_pdfOCR[1], $options_check);
+
+        $pdfProtected->pdfProtected($result_pdfOCR[0], $output_dir, true);
+
+    }
+    else
+    {
+        //Check pdf file exist email or phone
+        $checkExistEmailPhone = $pdf->checkExitsEmailPhone($output_dir, $name_file);
+
+        if (!$checkExistEmailPhone)
+        {
+            $pdfOCR = new PdfOCR();
+
+            $result_pdfOCR = $pdfOCR->pdfOCR($file);
+
+            if (!$result_pdfOCR) exit('File not convert. Try again');
+
+            $pdfProtected = new PdfProtected($result_pdfOCR[1], $options_check);
+
+            $pdfProtected->pdfProtected($result_pdfOCR[0], $output_dir, true, true);
+        }
+        else
+        {
+            $pdfProtected = new PdfProtected($file, $options_check);
+
+            $pdfProtected->pdfProtected($name_file, $output_dir, false, false, 'doc');
+        }
+    }
 ```
 
 **V. License**

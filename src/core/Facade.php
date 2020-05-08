@@ -1,16 +1,11 @@
 <?php
-namespace Luongtv\Extract\core;
+
+namespace WorkableCV\Extract\core;
 
 use Illuminate\Support\Facades\Facade as IlluminateFacade;
 
-class Facade extends IlluminateFacade {
-
-    /**
-     * Get the registered name of the component.
-     *
-     * @return string
-     */
-    protected static function getFacadeAccessor() { return 'dompdf.wrapper'; }
+class Facade extends IlluminateFacade
+{
 
     /**
      * Resolve a new instance
@@ -39,6 +34,16 @@ class Facade extends IlluminateFacade {
             default:
                 return call_user_func_array(array($instance, $method), $args);
         }
+    }
+
+    /**
+     * Get the registered name of the component.
+     *
+     * @return string
+     */
+    protected static function getFacadeAccessor()
+    {
+        return 'dompdf.wrapper';
     }
 
 

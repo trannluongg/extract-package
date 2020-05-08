@@ -1,5 +1,5 @@
 {
-    "name": "luongtv/extract",
+    "name": "workable-cv/extract",
     "description": "Package extract pdf file.",
     "type": "library",
     "license": "MIT",
@@ -23,13 +23,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Luongtv\\Extract\\":  "src/"
+            "WorkableCV\\Extract\\":  "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Luongtv\\Extract\\ExtractServiceProvider"
+                "WorkableCV\\Extract\\ExtractServiceProvider"
             ]
         }
     }

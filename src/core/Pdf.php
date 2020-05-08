@@ -1,6 +1,6 @@
 <?php
 
-namespace Luongtv\Extract\core;
+namespace WorkableCV\Extract\core;
 
 /**
  * This class creates a collection of html pages with some improvements.
@@ -18,29 +18,60 @@ class Pdf extends Base
 
     private $defaultOptions = [
         'pdftohtml_path' => '/usr/bin/pdftohtml',
-        'pdfinfo_path' => '/usr/bin/pdfinfo',
+        'pdfinfo_path'   => '/usr/bin/pdfinfo',
 
         'generate' => [
-            'singlePage' => false,
-            'imageJpeg' => false,
+            'singlePage'   => false,
+            'imageJpeg'    => false,
             'ignoreImages' => false,
-            'zoom' => 1.5,
-            'noFrames' => true,
+            'zoom'         => 1.5,
+            'noFrames'     => true,
         ],
 
-        'outputDir' => '',
+        'outputDir'       => '',
         'removeOutputDir' => false,
-        'clearAfter' => true,
+        'clearAfter'      => true,
 
         'html' => [
             'inlineImages' => true,
         ]
     ];
 
-    public function __construct($file, $options=[])
+    public function __construct($file, $options = [])
     {
         $this->setOptions(array_replace_recursive($this->defaultOptions, $options));
         $this->setFile($file)->setInfoObject()->setHtmlObject();
+    }
+
+    /**
+     * Create and set Html object.
+     * @return $this
+     */
+    private function setHtmlObject()
+    {
+        $this->html = new Html($this->getOptions('html'));
+        return $this;
+    }
+
+    /**
+     * Get pdf file info using pdfinfo software.
+     * @return $this
+     */
+    private function setInfoObject()
+    {
+        $content = shell_exec($this->getOptions('pdfinfo_path') . ' ' . escapeshellarg($this->file));
+        $options = explode("\n", $content);
+        $info    = [];
+        foreach ($options as &$item)
+        {
+            if (!empty($item))
+            {
+                list($key, $value) = explode(':', $item);
+                $info[str_replace([' '], ['_'], strtolower($key))] = trim($value);
+            }
+        }
+        $this->info = $info;
+        return $this;
     }
 
     /**
@@ -60,20 +91,9 @@ class Pdf extends Base
      */
     public function getInfo()
     {
-        if($this->info == null)
+        if ($this->info == null)
             $this->setInfoObject();
         return $this->info;
-    }
-
-    /**
-     * Get count page in pdf file.
-     * @return mixed
-     */
-    public function countPages()
-    {
-        if($this->info == null)
-            $this->setInfoObject();
-        return $this->info['pages'];
     }
 
     /**
@@ -87,48 +107,6 @@ class Pdf extends Base
     }
 
     /**
-     * Set output dir.
-     * @param string $dir
-     * @return $this
-     */
-    public function setOutputDir($dir)
-    {
-        if ($this->html) {
-            $this->html->setOutputDir($dir);
-        }
-        return parent::setOutputDir($dir);
-    }
-
-    /**
-     * Get pdf file info using pdfinfo software.
-     * @return $this
-     */
-    private function setInfoObject()
-    {
-        $content = shell_exec($this->getOptions('pdfinfo_path') . ' ' . escapeshellarg($this->file));
-        $options = explode("\n", $content);
-        $info = [];
-        foreach($options as &$item) {
-            if(!empty($item)) {
-                list($key, $value) = explode(':', $item);
-                $info[str_replace([' '], ['_'], strtolower($key))] = trim($value);
-            }
-        }
-        $this->info = $info;
-        return $this;
-    }
-
-    /**
-     * Create and set Html object.
-     * @return $this
-     */
-    private function setHtmlObject()
-    {
-        $this->html = new Html($this->getOptions('html'));
-        return $this;
-    }
-
-    /**
      * Method does most of work, parses pdf, html files obtained prepares and sends to Html object.
      */
     private function getContent()
@@ -138,17 +116,20 @@ class Pdf extends Base
 
         $this->setOutputDir($outputDir)->generate();
 
-        $fileinfo = pathinfo($this->file);
+        $fileinfo  = pathinfo($this->file);
         $base_path = $this->getOutputDir() . '/' . $fileinfo['filename'];
 
         $countPages = $this->countPages();
-        if ($countPages) {
+        if ($countPages)
+        {
             if ($countPages > 1)
-                for ($i = 1; $i <= $countPages; $i++) {
+                for ($i = 1; $i <= $countPages; $i++)
+                {
                     $content = file_get_contents($base_path . '-' . $i . '.html');
                     $this->html->addPage($i, $content);
                 }
-            else {
+            else
+            {
                 $content = file_get_contents($base_path . '.html');
                 $this->html->addPage(1, $content);
             }
@@ -165,7 +146,7 @@ class Pdf extends Base
     private function generate()
     {
         $this->result = null;
-        $command = $this->getCommand();
+        $command      = $this->getCommand();
         $this->result = exec($command);
         return $this;
     }
@@ -174,22 +155,25 @@ class Pdf extends Base
      * Get command for generate html
      * @return string
      */
-    public function getCommand() {
+    public function getCommand()
+    {
         if ($this->countPages() > 1)
-            $this->setOptions(['generate'=>['noFrames' => false]]);
-        $output = $this->getOutputDir() . '/' . preg_replace("/\.pdf$/", '', basename($this->file)) . '.html';
+            $this->setOptions(['generate' => ['noFrames' => false]]);
+        $output  = $this->getOutputDir() . '/' . preg_replace("/\.pdf$/", '', basename($this->file)) . '.html';
         $options = $this->generateOptions();
         $command = $this->getOptions('pdftohtml_path') . ' ' . $options . ' ' . escapeshellarg($this->file) . ' ' . escapeshellarg($output);
         return $command;
     }
 
     /**
-     * Get result of generate html
-     * @return string|null
+     * Get count page in pdf file.
+     * @return mixed
      */
-    public function getResult()
+    public function countPages()
     {
-        return $this->result;
+        if ($this->info == null)
+            $this->setInfoObject();
+        return $this->info['pages'];
     }
 
     /**
@@ -198,11 +182,13 @@ class Pdf extends Base
      */
     private function generateOptions()
     {
-        $generated = array();
+        $generated     = array();
         $generateValue = $this->getOptions('generate');
-        array_walk($generateValue, function ($value, $key) use (&$generated) {
+        array_walk($generateValue, function ($value, $key) use (&$generated)
+        {
             $result = '';
-            switch ($key) {
+            switch ($key)
+            {
                 case 'singlePage':
                     $result = $value ? '-s' : '-c';
                     break;
@@ -222,6 +208,29 @@ class Pdf extends Base
             $generated[] = $result;
         });
         return implode(' ', $generated);
+    }
+
+    /**
+     * Set output dir.
+     * @param string $dir
+     * @return $this
+     */
+    public function setOutputDir($dir)
+    {
+        if ($this->html)
+        {
+            $this->html->setOutputDir($dir);
+        }
+        return parent::setOutputDir($dir);
+    }
+
+    /**
+     * Get result of generate html
+     * @return string|null
+     */
+    public function getResult()
+    {
+        return $this->result;
     }
 
 }
