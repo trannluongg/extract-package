@@ -228,9 +228,9 @@ Add to php.ini
     $doc->generatePDF('test.doc', 'test.pdf');
     
     //linux, masOs
-    $doc->generatePDFLinux('test.doc', 'test.pdf');
+    $doc->generatePDFLinux('test.doc');
 ```
-**IV. PDF OCR**
+**V. PDF OCR**
 
 **Usage**
 
@@ -251,7 +251,7 @@ Install OCRmyPDF : https://ocrmypdf.readthedocs.io/en/latest/
     $pdfOCR->pdfOCR('test.pdf', 'test.ocr.pdf'); 
 ```
 
-**IV. PDF PROTECTED**
+**VI. PDF PROTECTED**
 
 **Note**
 
@@ -320,6 +320,6 @@ Install OCRmyPDF : https://ocrmypdf.readthedocs.io/en/latest/
     }
 ```
 
-**V. License**
+**VII. License**
 
 This Extract Pdf for Laravel is open-sourced software licensed under the MIT license
