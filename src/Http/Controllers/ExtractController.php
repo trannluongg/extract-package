@@ -20,15 +20,15 @@ class ExtractController extends Controller
     public function convertDocToPdf()
     {
         $doc = new DocToPdf();
-        $result = $doc->generatePDF(storage_path('doc/cv23.docx'), storage_path('cv/cv100.pdf'));
+        $result = $doc->generatePDFLinux(storage_path('doc/cv23.docx'), storage_path('doc'));
         if (!$result) exit('Convert error. Try again');
         exit('Convert Doc to Pdf successfully');
     }
 
     public function extract()
     {
-        $name_file = 'cv105';
-        $file      = storage_path('cv1/' . $name_file . '.pdf');
+        $name_file = 'cv101';
+        $file      = storage_path('cv/' . $name_file . '.pdf');
 
         $options_check = config('extract.options_extract');
 
@@ -46,10 +46,13 @@ class ExtractController extends Controller
 
             if (!$result_pdfOCR) exit('File not convert. Try again');
 
-            $pdfProtected = new PdfProtected($result_pdfOCR[1], $options_check);
+            $path_file_ocr = $result_pdfOCR[1];
+
+            $pdfProtected = new PdfProtected($path_file_ocr, $options_check);
 
             $pdfProtected->pdfProtected($result_pdfOCR[0], $output_dir, true);
 
+            unlink($path_file_ocr);
         }
         else
         {
@@ -63,9 +66,13 @@ class ExtractController extends Controller
 
                 if (!$result_pdfOCR) exit('File not convert. Try again');
 
-                $pdfProtected = new PdfProtected($result_pdfOCR[1], $options_check);
+                $path_file_ocr = $result_pdfOCR[1];
 
-                $pdfProtected->pdfProtected($result_pdfOCR[0], $output_dir, true, true);
+                $pdfProtected = new PdfProtected($path_file_ocr, $options_check);
+
+                $pdfProtected->pdfProtected($result_pdfOCR[0], $output_dir, true);
+
+                unlink($path_file_ocr);
             }
             else
             {

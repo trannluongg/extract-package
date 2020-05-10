@@ -10,8 +10,8 @@ $output_dir = storage_path('files/' . $name_folder);
 
 return [
     'options_extract'       => [
-        'pdftohtml_path' => 'C:\Users\ASUS\Desktop\poppler-0.68.0\bin\pdftohtml.exe',
-        'pdfinfo_path'   => 'C:\Users\ASUS\Desktop\poppler-0.68.0\bin\pdfinfo.exe',
+        'pdftohtml_path' => '/usr/bin/pdftohtml',
+        'pdfinfo_path'   => '/usr/bin/pdfinfo',
         'generate'       => [
             'singlePage'   => false,
             'imageJpeg'    => true,
@@ -22,5 +22,6 @@ return [
         'clearAfter'     => false,
         'outputDir'      => $output_dir
     ],
-    'protected' => '[123cv.net protected]'
+    'cv_protected' => '[123cv.net protected]',
+    'path_ocrmypdf' => '/home/uuu/.local/bin/ocrmypdf'
 ];
