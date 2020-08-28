@@ -9,7 +9,6 @@
 namespace WorkableCV\Extract\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use WorkableCV\Extract\core\DocToPdf;
 use WorkableCV\Extract\core\HtmlToPdf;
 use WorkableCV\Extract\core\PdfOCR;
 use WorkableCV\Extract\core\PdfProtected;
@@ -19,20 +18,20 @@ class ExtractController extends Controller
 {
     public function convertDocToPdf()
     {
-        $doc = new DocToPdf();
-        $result = $doc->generatePDF(storage_path('doc/cv23.docx'), storage_path('cv/cv100.pdf'));
-        if (!$result) exit('Convert error. Try again');
-        exit('Convert Doc to Pdf successfully');
+        //        $doc = new DocToPdf();
+        //        $result = $doc->generatePDF(storage_path('doc/cv23.docx'), storage_path('cv/cv100.pdf'));
+        //        if (!$result) exit('Convert error. Try again');
+        //        exit('Convert Doc to Pdf successfully');
     }
 
     public function extract()
     {
-        $name_file = 'cv105';
-        $file      = storage_path('cv1/' . $name_file . '.pdf');
+        $name_file = '2020_08_27______6031470f3ba7452fc5554bc1645c1711';
+        $file      = public_path('upload_cv/2020/08/28/' . $name_file . '.pdf');
 
         $options_check = config('extract.options_extract');
 
-        $pdf           = new PdfToHtml($file, $options_check);
+        $pdf = new PdfToHtml($file, $options_check);
 
         $output_dir = config('extract.options_extract.outputDir');
 

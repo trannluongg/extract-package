@@ -6,12 +6,12 @@
  * Time: 1:28 PM
  */
 $name_folder = uniqid();
-$output_dir = storage_path('files/' . $name_folder);
+$output_dir = public_path('files/' . $name_folder);
 
 return [
     'options_extract'       => [
-        'pdftohtml_path' => 'C:\Users\ASUS\Desktop\poppler-0.68.0\bin\pdftohtml.exe',
-        'pdfinfo_path'   => 'C:\Users\ASUS\Desktop\poppler-0.68.0\bin\pdfinfo.exe',
+        'pdftohtml_path' => '/usr/bin/pdftohtml',
+        'pdfinfo_path'   => '/usr/bin/pdfinfo',
         'generate'       => [
             'singlePage'   => false,
             'imageJpeg'    => true,
