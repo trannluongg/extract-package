@@ -36,13 +36,14 @@ class DocToPdf
 
     /**
      * @param string $path_file_doc
+     * @param string $output_dir_pdf
      * @return string
      */
-    public function generatePDFLinux($path_file_doc = '')
+    public function generatePDFLinux($path_file_doc = '', $output_dir_pdf = '')
     {
         if (file_exists($path_file_doc))
         {
-            $process = new Process(['lowriter',  '--convert-to pdf', $path_file_doc]);
+            $process = new Process(['lowriter',  '--convert-to', 'pdf', $path_file_doc, '--outdir', $output_dir_pdf]);
             try {
                 $process->mustRun();
                 return $process->getOutput();

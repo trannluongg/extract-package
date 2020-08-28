@@ -20,7 +20,7 @@ class PdfOCR
     public function pdfOCR($file_pdf_ocr = '')
     {
         $name_file   = uniqid();
-        $path_pdfOCR = storage_path('cv/' . $name_file . '.pdf');
+        $path_pdfOCR = storage_path( $name_file . '.pdf');
 
         $result = $this->handlePdfOCR($file_pdf_ocr, $path_pdfOCR);
 
@@ -59,9 +59,11 @@ class PdfOCR
     {
         if (!file_exists($path_pdf)) throw new \Exception('File do not exit');
 
-        //$command ='ocrmypdf -l eng+vie --redo-ocr --remove-background --deskew ' . $path_pdf . ' ' . $path_pdf_ocr;
+        $process = new Process([config('extract.path_ocrmypdf'), '-l', 'eng+vie', '--redo-ocr', $path_pdf, $path_pdf_ocr], null, [
+            'LC_ALL' => 'C.UTF-8',
+            'LANG' => 'C.UTF-8'
+        ]);
 
-        $process = new Process(['ocrmypdf',  '-l eng+vie', '--redo-ocr', '--remove-background', $path_pdf, $path_pdf_ocr]);
         try {
             $process->mustRun();
             return $process->getOutput();

@@ -208,12 +208,25 @@ Refer to https://www.php.net/manual/en/book.com.php
 
 **Requirement**
 
-Add to php.ini
+- Window
 
-```
-   [PHP_COM_DOTNET]
-   extension=php_com_dotnet.dll 
-```
+  - Add to php.ini
+
+    ```
+       [PHP_COM_DOTNET]
+       extension=php_com_dotnet.dll 
+    ```
+    
+- masOs, Linux
+    ```
+        snap install libreoffice
+        sudo add-apt-repository ppa:libreoffice/ppa
+        sudo apt-get update
+        sudo apt-get install libreoffice
+        sudo apt-get update -y
+        sudo apt-get install -y libreoffice-java-common
+        sudo apt-get install default-jre libreoffice-java-common
+    ```
 
 **Example**
 
@@ -289,9 +302,13 @@ Install OCRmyPDF : https://ocrmypdf.readthedocs.io/en/latest/
 
         if (!$result_pdfOCR) exit('File not convert. Try again');
 
-        $pdfProtected = new PdfProtected($result_pdfOCR[1], $options_check);
+        $path_file_ocr = $result_pdfOCR[1];
+        
+        $pdfProtected = new PdfProtected($path_file_ocr, $options_check);
 
         $pdfProtected->pdfProtected($result_pdfOCR[0], $output_dir, true);
+
+        unlink($path_file_ocr);
 
     }
     else
@@ -307,9 +324,13 @@ Install OCRmyPDF : https://ocrmypdf.readthedocs.io/en/latest/
 
             if (!$result_pdfOCR) exit('File not convert. Try again');
 
-            $pdfProtected = new PdfProtected($result_pdfOCR[1], $options_check);
+            $path_file_ocr = $result_pdfOCR[1];
+            
+            $pdfProtected = new PdfProtected($path_file_ocr, $options_check);
 
-            $pdfProtected->pdfProtected($result_pdfOCR[0], $output_dir, true, true);
+            $pdfProtected->pdfProtected($result_pdfOCR[0], $output_dir, true);
+
+            unlink($path_file_ocr);
         }
         else
         {

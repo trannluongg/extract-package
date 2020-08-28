@@ -37,7 +37,7 @@ class PdfProtected extends Pdf
     public function pdfProtected($name_file = null, $path_tmp = null, $ocr = false, $flag_text = false, $extension = 'pdf',
                                  $path_save = 0, $folder_save = null)
     {
-        if ($folder_save) $path = $folder_save;
+        if ($folder_save) $path = $folder_save . '/' . date('Y') . '/' . date('m') . '/' . date('d');
         else $path = 'files/' . date('Y') . '/' . date('m') . '/' . date('d');
 
         createFolder($path, $path_save);

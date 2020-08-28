@@ -45,10 +45,13 @@ class ExtractController extends Controller
 
             if (!$result_pdfOCR) exit('File not convert. Try again');
 
-            $pdfProtected = new PdfProtected($result_pdfOCR[1], $options_check);
+            $path_file_ocr = $result_pdfOCR[1];
 
-            $pdfProtected->pdfProtected($result_pdfOCR[0], $output_dir, true);
+            $pdfProtected = new PdfProtected($path_file_ocr, $options_check);
 
+            $pdfProtected->pdfProtected($result_pdfOCR[0], $output_dir, true, false, 'pdf', 1,  config('extract.output_cv_protected'));
+
+            unlink($path_file_ocr);
         }
         else
         {
@@ -62,9 +65,13 @@ class ExtractController extends Controller
 
                 if (!$result_pdfOCR) exit('File not convert. Try again');
 
-                $pdfProtected = new PdfProtected($result_pdfOCR[1], $options_check);
+                $path_file_ocr = $result_pdfOCR[1];
 
-                $pdfProtected->pdfProtected($result_pdfOCR[0], $output_dir, true, true);
+                $pdfProtected = new PdfProtected($path_file_ocr, $options_check);
+
+                $pdfProtected->pdfProtected($result_pdfOCR[0], $output_dir, true);
+
+                unlink($path_file_ocr);
             }
             else
             {

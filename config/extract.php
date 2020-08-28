@@ -7,6 +7,7 @@
  */
 $name_folder = uniqid();
 $output_dir = public_path('files/' . $name_folder);
+$output_protected = public_path('cv_protected');
 
 return [
     'options_extract'       => [
@@ -22,5 +23,7 @@ return [
         'clearAfter'     => false,
         'outputDir'      => $output_dir
     ],
-    'protected' => '[123cv.net protected]'
+    'protected' => '[123cv.net protected]',
+    'output_cv_protected' => 'cv_protected',//folder nằm trong thư mục public
+    'path_ocrmypdf' => '/home/tranluong/.local/bin/ocrmypdf'
 ];
