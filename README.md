@@ -306,7 +306,7 @@ Install OCRmyPDF : https://ocrmypdf.readthedocs.io/en/latest/
         
         $pdfProtected = new PdfProtected($path_file_ocr, $options_check);
 
-        $pdfProtected->pdfProtected($result_pdfOCR[0], $output_dir, true);
+        $pdfProtected->pdfProtected($name_file, $output_dir, false, false, 'pdf', 1,  config('extract.output_cv_protected'));
 
         unlink($path_file_ocr);
 
@@ -328,7 +328,7 @@ Install OCRmyPDF : https://ocrmypdf.readthedocs.io/en/latest/
             
             $pdfProtected = new PdfProtected($path_file_ocr, $options_check);
 
-            $pdfProtected->pdfProtected($result_pdfOCR[0], $output_dir, true);
+           $pdfProtected->pdfProtected($name_file, $output_dir, false, false, 'pdf', 1,  config('extract.output_cv_protected'));
 
             unlink($path_file_ocr);
         }
@@ -336,7 +336,7 @@ Install OCRmyPDF : https://ocrmypdf.readthedocs.io/en/latest/
         {
             $pdfProtected = new PdfProtected($file, $options_check);
 
-            $pdfProtected->pdfProtected($name_file, $output_dir, false, false, 'doc');
+            $pdfProtected->pdfProtected($name_file, $output_dir, false, false, 'pdf', 1,  config('extract.output_cv_protected'));
         }
     }
 ```
