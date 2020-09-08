@@ -80,6 +80,7 @@ class ExtractController extends Controller
                 $path_cv_protected = $pdfProtected->pdfProtected($name_file, $output_dir, false, false, 'pdf', 1,  config('extract.output_cv_protected'));
             }
         }
+
         return $path_cv_protected;
     }
 
