@@ -26,7 +26,7 @@ class ExtractController extends Controller
 
     public function extract()
     {
-        $name_file = '2020_08_27______6031470f3ba7452fc5554bc1645c1711';
+        $name_file = 'cv16';
 
         $file      = public_path('upload_cv/2020/08/28/' . $name_file . '.pdf');
 
@@ -48,7 +48,8 @@ class ExtractController extends Controller
 
             $path_file_ocr = $result_pdfOCR[1];
             $pdfProtected = new PdfProtected($path_file_ocr, $options_check);
-            $pdfProtected->pdfProtected($result_pdfOCR[0], $output_dir, true, false, 'pdf', 1,  config('extract.output_cv_protected'));
+
+            $path_cv_protected = $pdfProtected->pdfProtected($result_pdfOCR[0], $output_dir, true, false, 'pdf', 1,  config('extract.output_cv_protected'));
 
             unlink($path_file_ocr);
         }
@@ -68,7 +69,7 @@ class ExtractController extends Controller
 
                 $pdfProtected = new PdfProtected($path_file_ocr, $options_check);
 
-                $pdfProtected->pdfProtected($result_pdfOCR[0], $output_dir, true, false, 'pdf', 1,  config('extract.output_cv_protected'));
+                $path_cv_protected = $pdfProtected->pdfProtected($result_pdfOCR[0], $output_dir, true, false, 'pdf', 1,  config('extract.output_cv_protected'));
 
                 unlink($path_file_ocr);
             }
@@ -76,9 +77,10 @@ class ExtractController extends Controller
             {
                 $pdfProtected = new PdfProtected($file, $options_check);
 
-                $pdfProtected->pdfProtected($name_file, $output_dir, false, false, 'pdf', 1,  config('extract.output_cv_protected'));
+                $path_cv_protected = $pdfProtected->pdfProtected($name_file, $output_dir, false, false, 'pdf', 1,  config('extract.output_cv_protected'));
             }
         }
+        return $path_cv_protected;
     }
 
     public function generate()

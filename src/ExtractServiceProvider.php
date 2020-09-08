@@ -22,10 +22,10 @@ class ExtractServiceProvider extends IlluminateServiceProvider
         $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
         $this->loadViewsFrom(__DIR__ . '/views', 'extract');
         $this->publishes([
-                             __DIR__ . '/../assets/fontawesome-free-5.12.1-web' => public_path('fontawesome-free-5.12.1-web'),
+                             __DIR__ . '/../assets/fontawesome-free-5.12.1-web' => public_path('fonts/extract_cv/fontawesome-free-5.12.1-web'),
                              __DIR__ . '/../config/dompdf.php'                  => config_path('dompdf.php'),
                              __DIR__ . '/../config/extract.php'                 => config_path('extract.php'),
-                             __DIR__ . '/../assets/fonts'                       => storage_path('fonts')
+                             __DIR__ . '/../assets/fonts'                       => public_path('fonts/extract_cv')
                          ]);
     }
 

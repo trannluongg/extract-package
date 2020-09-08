@@ -42,7 +42,7 @@ class PdfProtected extends Pdf
 
         createFolder($path, $path_save);
 
-        $file_pdf_name = date('d_m_Y') . '__________' . uniqid();
+        $file_pdf_name = date('Y_m_d') . '__________' . uniqid();
 
         $pdf_info = $this->getInfo();
 
@@ -71,6 +71,8 @@ class PdfProtected extends Pdf
         saveProtected($path_save, $path_pdf_protected, $content_html);
 
         deleteAll($path_tmp);
+
+        return $path_pdf_protected;
     }
 
     /**
