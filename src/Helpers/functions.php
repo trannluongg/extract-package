@@ -312,6 +312,21 @@ if (!function_exists('getTextBetweenTags'))
     }
 }
 
+if (!function_exists('generateNewFileName'))
+{
+    function generateNewFileName($filename)
+    {
+        $ipClient = time() .uniqid() . rand(111111,999999) . rand(111111,999999);
+
+        $prefix      = date("Y_m_d").'___'.strtotime(date("Y_m_d")).'___';
+        $nFilename   = str_replace('.', '--', $filename);
+        $nFilename   = \Illuminate\Support\Str::slug($nFilename);
+        $filenameMd5 = $prefix . md5($nFilename . $ipClient);
+
+        return $filenameMd5;
+    }
+}
+
 /**
  * @param $file_name
  * @param $content

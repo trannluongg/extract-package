@@ -26,7 +26,7 @@ class ExtractController extends Controller
 
     public function extract()
     {
-        $name_file = 'cv16';
+        $name_file = 'cv12';
 
         $file      = public_path('upload_cv/2020/08/28/' . $name_file . '.pdf');
 
