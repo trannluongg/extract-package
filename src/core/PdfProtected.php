@@ -65,7 +65,7 @@ class PdfProtected extends Pdf
         }
 
         $content_html = handleHtmlBasic($content_page, $path_tmp, $name_file, $content_html, $ocr, $content_text, $extension);
-
+        
         $path_pdf_protected = $path . '/' . $file_pdf_name . '.pdf';
 
         saveProtected($path_save, $path_pdf_protected, $content_html);

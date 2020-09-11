@@ -24,7 +24,10 @@
     "autoload": {
         "psr-4": {
             "WorkableCV\\Extract\\":  "src/"
-        }
+        },
+        "files" : [
+            "src/Helpers/functions.php"
+        ]
     },
     "extra": {
         "laravel": {
