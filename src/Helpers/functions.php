@@ -30,11 +30,11 @@ if (!function_exists('regex'))
         $string = str_replace('<br/>', 'noiuytrewq', $string);
         $string = str_replace('<br>', 'asdfghjkln', $string);
 
-        $string = preg_replace('/(\s+)?(?:https?:\/\/)?(?:www\.)?(facebook|fb)\.[a-z]{1,13}\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-<>]*\/[^(\/p)])*([\w\-\.<>]*)[\?a-zA-Z0-9=\s+\/<>][^(\/p)]{1,}/', config('extract.protected').'<', $string);
-        $string = preg_replace('/([a-zA-Z0-9\[\]]|\s+)(\.?[a-zA-Z0-9\s\[\]_\/]){5,}@[a-zA-Z<>\s\.]{3,}\.[a-zA-Z\s+\.\/<>][^(<\/p)]{0,}/', config('extract.protected'), $string);
-        $string = preg_replace('/([a-zA-Z0-9\[\]]|\s+)(\.?[a-zA-Z0-9\[\]_\/]){5,}@/', config('extract.protected'), $string);
+        $string = preg_replace('/(\s+)?(?:https?:\/\/)?(?:www\.)?(facebook|fb)\.[a-z]{1,13}\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-<>]*\/[^(\/p)])*([\w\-\.<>]*)[\?a-zA-Z0-9=\s+\/<>][^(\/p)]{1,}/', config('extract.protected') . '<', $string);
+        $string = preg_replace('/([a-zA-Z0-9\[\]]|\s+)(\.?[a-zA-Z0-9\s\[\]_\/]){5,100}@[a-zA-Z<>\s\.]{3,}\.[a-zA-Z\s+\.\/<>][^(<\/p)]*/', config('extract.protected'), $string);
+        $string = preg_replace('/([a-zA-Z0-9\[\]]|\s+)(\.?[a-zA-Z0-9\[\]_\/]){5,100}@/', config('extract.protected'), $string);
         $string = preg_replace('/id=[0-9]*/', config('extract.protected'), $string);
-        $string = preg_replace('/([a-zA-Z0-9]|\s+)(\.?[a-zA-Z0-9]){5,}@[a-zA-Z\s\.]{3,}/', config('extract.protected'), $string);
+        $string = preg_replace('/([a-zA-Z0-9]|\s+)(\.?[a-zA-Z0-9]){5, 100}@[a-zA-Z\s\.]{3,}/', config('extract.protected'), $string);
         $string = preg_replace('~(?:(?:https:\/\/)|(?:http:\/\/)|(?:www\.)|([a-zA-Z]{1,}(?:\.(com|net))))(?![^" ]*(?:jpg|png|gif|"))[^" <>]+~', config('extract.protected'), $string);
 
         $string = preg_replace('~line\-height: ?([\d]+)px;~', '', $string);
@@ -316,9 +316,9 @@ if (!function_exists('generateNewFileName'))
 {
     function generateNewFileName($filename)
     {
-        $ipClient = time() .uniqid() . rand(111111,999999) . rand(111111,999999);
+        $ipClient = time() . uniqid() . rand(111111, 999999) . rand(111111, 999999);
 
-        $prefix      = date("Y_m_d").'___'.strtotime(date("Y_m_d")).'___';
+        $prefix      = date("Y_m_d") . '___' . strtotime(date("Y_m_d")) . '___';
         $nFilename   = str_replace('.', '--', $filename);
         $nFilename   = \Illuminate\Support\Str::slug($nFilename);
         $filenameMd5 = $prefix . md5($nFilename . $ipClient);
@@ -403,6 +403,7 @@ if (!function_exists('handleHtmlBasic'))
             {
                 $image = $path_tmp . "/" . $name_file . "001.jpg";
                 removeBorderImage($image, $path_tmp, $name_file . '001.jpg', 2, 10);
+                $image        = base64Image($image);
                 $img          = str_replace($matches[1], $image, $matches[0]);
                 $content_page = str_replace($matches[0], $img, $content_page);
             }
@@ -443,6 +444,7 @@ if (!function_exists('handleHtmlBasic'))
                         removeBorderImage($image, $path_tmp, $name_file . "0" . $key . ".jpg", 2, 2);
                     }
 
+                    $image    = base64Image($image);
                     $img      = str_replace($matches[1], $image, $matches[0]);
                     $row_page = str_replace($matches[0], $img, $row_page);
                 }
@@ -508,6 +510,7 @@ if (!function_exists('handleHtmlAdvanced'))
             {
                 $image = $path_file . "/" . $name_file . "001.jpg";
                 removeBorderImage($image, $path_file, $name_file . '001.jpg', 2, 10);
+                $image        = base64Image($image);
                 $img          = str_replace($matches[1], $image, $matches[0]);
                 $content_page = str_replace($matches[0], $img, $content_page);
             }
@@ -543,6 +546,7 @@ if (!function_exists('handleHtmlAdvanced'))
                         $image = $path_file . "/" . $name_file . "0" . $key . ".jpg";
                         removeBorderImage($image, $path_file, $name_file . "0" . $key . ".jpg", 2, 2);
                     }
+                    $image    = base64Image($image);
                     $img      = str_replace($matches[1], $image, $matches[0]);
                     $row_page = str_replace($matches[0], $img, $row_page);
                 }
@@ -581,7 +585,7 @@ if (!function_exists('checkWidthImage'))
             if ($width < 880)
             {
                 $image_new = substr_replace($matches[0], ' style="padding-right:70px" ', 4, 1);
-                $string = str_replace($matches[0], $image_new, $string);
+                $string    = str_replace($matches[0], $image_new, $string);
             }
         }
         return $string;
@@ -740,7 +744,8 @@ if (!function_exists('generateFont'))
     function generateFont()
     {
         return
-            '@font-face {
+            '
+            @font-face {
             font-family: \'Roboto\';
             font-style: normal;
             font-weight: 100;
@@ -946,5 +951,21 @@ if (!function_exists('generateScript'))
                     });
             });
         </script>';
+    }
+}
+
+
+/**
+ * @return string
+ */
+if (!function_exists('base64Image'))
+{
+    function base64Image($image_path)
+    {
+        $type   = pathinfo($image_path, PATHINFO_EXTENSION);
+        $data   = file_get_contents($image_path);
+        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+        return $base64;
     }
 }
