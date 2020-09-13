@@ -33,9 +33,7 @@ class ExtractController extends Controller
         $options_check = config('extract.options_extract');
 
         $pdf           = new PdfToHtml($file, $options_check);
-
         $output_dir    = config('extract.options_extract.outputDir');
-
         $checkPdf      = $pdf->checkPdf($output_dir, $name_file);
 
         if ($checkPdf)
