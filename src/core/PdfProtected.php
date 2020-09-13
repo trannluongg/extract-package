@@ -26,6 +26,7 @@ class PdfProtected extends Pdf
     }
 
     /**
+     * B
      * @param null $name_file
      * @param null $path_tmp
      * @param bool $ocr
@@ -33,9 +34,13 @@ class PdfProtected extends Pdf
      * @param string $extension
      * @param int $path_save
      * @param null $folder_save
+     * @param bool $img_base64
+     * @return string
+     * User: TranLuong
+     * Date: 13/09/2020
      */
     public function pdfProtected($name_file = null, $path_tmp = null, $ocr = false, $flag_text = false, $extension = 'pdf',
-                                 $path_save = 0, $folder_save = null)
+                                 $path_save = 0, $folder_save = null, $img_base64 = false)
     {
         if ($folder_save) $path = $folder_save . '/' . date('Y') . '/' . date('m') . '/' . date('d');
         else $path = 'files/' . date('Y') . '/' . date('m') . '/' . date('d');
@@ -64,7 +69,7 @@ class PdfProtected extends Pdf
             $content_text = $this->getTextNoOCR($this->file, $this->options, $name_file);
         }
 
-        $content_html = handleHtmlBasic($content_page, $path_tmp, $name_file, $content_html, $ocr, $content_text, $extension);
+        $content_html = handleHtmlBasic($content_page, $path_tmp, $name_file, $content_html, $ocr, $content_text, $extension, $img_base64);
 
         $path_pdf_protected = $path . '/' . $file_pdf_name . '.pdf';
 

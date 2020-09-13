@@ -376,12 +376,13 @@ if (!function_exists('saveProtected'))
  * @param boolean $ocr
  * @param string $content_text
  * @param boolean $extension
+ * @param boolean $img_base64
  * @return string
  */
 if (!function_exists('handleHtmlBasic'))
 {
     function handleHtmlBasic($content_page = [], $path_tmp = '', $name_file = '', $content_html = '', $ocr = false,
-                             $content_text = '', $extension = 'pdf')
+                             $content_text = '', $extension = 'pdf', $img_base64 = false)
     {
         if (count($content_page) <= 1)
         {
@@ -403,7 +404,10 @@ if (!function_exists('handleHtmlBasic'))
             {
                 $image = $path_tmp . "/" . $name_file . "001.jpg";
                 removeBorderImage($image, $path_tmp, $name_file . '001.jpg', 2, 10);
-                $image        = base64Image($image);
+                if ($img_base64)
+                {
+                    $image = base64Image($image);
+                }
                 $img          = str_replace($matches[1], $image, $matches[0]);
                 $content_page = str_replace($matches[0], $img, $content_page);
             }
@@ -443,8 +447,10 @@ if (!function_exists('handleHtmlBasic'))
                         $image = $path_tmp . "/" . $name_file . "0" . $key . ".jpg";
                         removeBorderImage($image, $path_tmp, $name_file . "0" . $key . ".jpg", 2, 2);
                     }
-
-                    $image    = base64Image($image);
+                    if ($img_base64)
+                    {
+                        $image = base64Image($image);
+                    }
                     $img      = str_replace($matches[1], $image, $matches[0]);
                     $row_page = str_replace($matches[0], $img, $row_page);
                 }
@@ -479,11 +485,12 @@ if (!function_exists('handleHtmlBasic'))
  * @param string $name_file
  * @param string $content_html
  * @param string $content_html_image
+ * @param boolean $img_base64
  * @return array
  */
 if (!function_exists('handleHtmlAdvanced'))
 {
-    function handleHtmlAdvanced($content_page = [], $path_file = '', $name_file = '', $content_html = '', $content_html_image = '')
+    function handleHtmlAdvanced($content_page = [], $path_file = '', $name_file = '', $content_html = '', $content_html_image = '', $img_base64 = false)
     {
         if (count($content_page) <= 1)
         {
@@ -510,7 +517,10 @@ if (!function_exists('handleHtmlAdvanced'))
             {
                 $image = $path_file . "/" . $name_file . "001.jpg";
                 removeBorderImage($image, $path_file, $name_file . '001.jpg', 2, 10);
-                $image        = base64Image($image);
+                if ($img_base64)
+                {
+                    $image = base64Image($image);
+                }
                 $img          = str_replace($matches[1], $image, $matches[0]);
                 $content_page = str_replace($matches[0], $img, $content_page);
             }
@@ -546,7 +556,10 @@ if (!function_exists('handleHtmlAdvanced'))
                         $image = $path_file . "/" . $name_file . "0" . $key . ".jpg";
                         removeBorderImage($image, $path_file, $name_file . "0" . $key . ".jpg", 2, 2);
                     }
-                    $image    = base64Image($image);
+                    if ($img_base64)
+                    {
+                        $image = base64Image($image);
+                    }
                     $img      = str_replace($matches[1], $image, $matches[0]);
                     $row_page = str_replace($matches[0], $img, $row_page);
                 }

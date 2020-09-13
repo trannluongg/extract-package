@@ -26,7 +26,7 @@ class ExtractController extends Controller
 
     public function extract()
     {
-        $name_file = 'cv12';
+        $name_file = 'abc';
 
         $file = public_path('upload_cv/2020/08/28/' . $name_file . '.pdf');
 
@@ -47,7 +47,15 @@ class ExtractController extends Controller
 
             $pdfProtected = new PdfProtected($path_file_ocr, $options_check);
 
-            $path_cv_protected = $pdfProtected->pdfProtected($result_pdfOCR[0], $output_dir, true, false, 'pdf', 1, config('extract.output_cv_protected'));
+            $path_cv_protected = $pdfProtected->pdfProtected(
+                $result_pdfOCR[0],
+                $output_dir,
+                true,
+                false,
+                'pdf',
+                1,
+                config('extract.output_cv_protected')
+            );
 
             unlink($path_file_ocr);
         }
@@ -67,7 +75,14 @@ class ExtractController extends Controller
 
                 $pdfProtected = new PdfProtected($path_file_ocr, $options_check);
 
-                $path_cv_protected = $pdfProtected->pdfProtected($result_pdfOCR[0], $output_dir, true, false, 'pdf', 1, config('extract.output_cv_protected'));
+                $path_cv_protected = $pdfProtected->pdfProtected(
+                    $result_pdfOCR[0],
+                    $output_dir,
+                    true,
+                    false,
+                    'pdf',
+                    1,
+                    config('extract.output_cv_protected'));
 
                 unlink($path_file_ocr);
             }
@@ -75,7 +90,15 @@ class ExtractController extends Controller
             {
                 $pdfProtected = new PdfProtected($file, $options_check);
 
-                $path_cv_protected = $pdfProtected->pdfProtected($name_file, $output_dir, false, false, 'pdf', 1, config('extract.output_cv_protected'));
+                $path_cv_protected = $pdfProtected->pdfProtected(
+                    $name_file,
+                    $output_dir,
+                    false,
+                    false,
+                    'pdf',
+                    1,
+                    config('extract.output_cv_protected')
+                );
             }
         }
 
