@@ -36,6 +36,7 @@ if (!function_exists('regex'))
         $string = preg_replace('/id=[0-9]*/', config('extract.protected'), $string);
         $string = preg_replace('/([a-zA-Z0-9]|\s+)(\.?[a-zA-Z0-9]){5, 100}@[a-zA-Z\s\.]{3,}/', config('extract.protected'), $string);
         $string = preg_replace('~(?:(?:https:\/\/)|(?:http:\/\/)|(?:www\.)|([a-zA-Z]{1,}(?:\.(com|net))))(?![^" ]*(?:jpg|png|gif|"))[^" <>]+~', config('extract.protected'), $string);
+        $string = preg_replace('/font-family.+?;/', '', $string);
 
         $string = preg_replace('~line\-height: ?([\d]+)px;~', '', $string);
         $string = str_replace('po;iu&&ytr--ewq', '       ', $string);
@@ -687,8 +688,6 @@ if (!function_exists('replaceAll'))
 {
     function replaceAll($content, $ocr = false)
     {
-        $content = str_replace('font-family: Times;', '', $content);
-        $content = str_replace('font-family:Times;', '', $content);
         if ($ocr) $content = replaceFontSize($content);
         return $content;
     }

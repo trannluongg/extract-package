@@ -59,7 +59,17 @@ class PdfOCR
     {
         if (!file_exists($path_pdf)) throw new \Exception('File do not exit');
 
-        $process = new Process([config('extract.path_ocrmypdf'), '-l', 'eng+vie', '--redo-ocr', $path_pdf, $path_pdf_ocr], null, [
+        $ocrmypdf = config('extract.ocrmypdf');
+        if ($ocrmypdf)
+        {
+            $cmd = [config('extract.path_ocrmypdf'), $ocrmypdf, '-l', 'eng+vie', '--redo-ocr', $path_pdf, $path_pdf_ocr];
+        }
+        else
+        {
+            $cmd = [config('extract.path_ocrmypdf'), '-l', 'eng+vie', '--redo-ocr', $path_pdf, $path_pdf_ocr];
+        }
+
+        $process = new Process($cmd, null, [
             'LC_ALL' => 'C.UTF-8',
             'LANG' => 'C.UTF-8'
         ]);
