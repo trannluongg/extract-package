@@ -722,6 +722,7 @@ if (!function_exists('replaceCss'))
         $string = trim(preg_replace('/\s\s+/', ' ', $string));
         $string = str_replace('<!--', '', $string);
         $string = str_replace('-->', '', $string);
+        $string = preg_replace('/font-family.+?;/', '', $string);
         if ($ocr) $string = replaceFontSize($string);
         $string = preg_replace('~line\-height: ?([\d]+)px;~', '', $string);
         return $string;
