@@ -30,7 +30,6 @@ class ExtractController extends Controller
         $file = public_path('upload_cv/2020/08/28/' . $name_file . '.pdf');
 
         $options_check = config('extract.options_extract');
-
         $pdf           = new PdfToHtml($file, $options_check);
         $output_dir    = config('extract.options_extract.outputDir');
         $checkPdf      = $pdf->checkPdf($output_dir, $name_file);
