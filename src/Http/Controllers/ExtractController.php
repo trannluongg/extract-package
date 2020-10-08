@@ -26,7 +26,7 @@ class ExtractController extends Controller
 
     public function extract()
     {
-        $name_file = 'cv2';
+        $name_file = 'abc';
         $file = public_path('upload_cv/2020/08/28/' . $name_file . '.pdf');
 
         $options_check = config('extract.options_extract');

@@ -17,6 +17,9 @@ if (!function_exists('regex'))
 {
     function regex($string, $extension = 'pdf', $number_page = 2)
     {
+        $img_not_regex = regexImg($string);
+        $string = str_replace($img_not_regex, '', $string);
+
         $string = handleHtmlEntities($string);
 
         $string = preg_replace('/(\s+|0|\:|(\(*\+*[0-9]{1,2}\)*))\s*[0-9\.\s+]{8,}/', config('extract.protected'), $string);
@@ -31,7 +34,7 @@ if (!function_exists('regex'))
         $string = str_replace('<br>', 'asdfghjkln', $string);
 
         $string = preg_replace('/(\s+)?(?:https?:\/\/)?(?:www\.)?(facebook|fb)\.[a-z]{1,13}\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-<>]*\/[^(\/p)])*([\w\-\.<>]*)[\?a-zA-Z0-9=\s+\/<>][^(\/p)]{1,}/', config('extract.protected') . '<', $string);
-        $string = preg_replace('/([a-zA-Z0-9\[\]]|\s+)(\.?[a-zA-Z0-9\s\[\]_\/]){5,100}@[a-zA-Z<>\s\.]{3,}\.[a-zA-Z\s+\.\/<>][^(<\/p)]*/', config('extract.protected'), $string);
+        $string = preg_replace('/([a-zA-Z0-9\[\]]|\s+)(\.?[a-zA-Z0-9\s\[\]_\/]){5,100}@[a-zA-Z<>\s\.]{3,}\.[a-zA-Z\s+\.\/<>][^(<\/p)]*[^(<\/p)]/', config('extract.protected'), $string);
         $string = preg_replace('/([a-zA-Z0-9\[\]]|\s+)(\.?[a-zA-Z0-9\[\]_\/]){5,100}@/', config('extract.protected'), $string);
         $string = preg_replace('/id=[0-9]*/', config('extract.protected'), $string);
         $string = preg_replace('/([a-zA-Z0-9]|\s+)(\.?[a-zA-Z0-9]){5, 100}@[a-zA-Z\s\.]{3,}/', config('extract.protected'), $string);
@@ -52,7 +55,25 @@ if (!function_exists('regex'))
 
         if ($number_page == 1 && $extension == 'doc') $string = replaceSpace($string);
 
+        $string = $img_not_regex .= $string;
+
         return $string;
+    }
+}
+
+/**
+ * @param $string
+ * @return string
+ */
+if (!function_exists('regexImg'))
+{
+    function regexImg($string)
+    {
+        preg_match('/<img\s.*?\b.*?>/si', $string, $matches);
+
+        $img_not_regex = $matches[0] ?? '';
+
+        return $img_not_regex;
     }
 }
 
@@ -623,7 +644,9 @@ if (!function_exists('handleContentOCR'))
             {
                 preg_match('/style="(.*?)"/i', $tag_p, $matches_style);
 
-                $style = 'style="' . $matches_style[1] . "; background: transparent !important; line-height: 18px" . '"';
+                $style_correct = $matches_style[1];
+                $style_correct = preg_replace('/font-family.+?;/', '', $style_correct);
+                $style         = 'style="' . $style_correct . "; background: transparent !important; line-height: 18px" . '"';
 
                 $tag_p_new = str_replace($matches_style[0], $style, $tag_p);
 
