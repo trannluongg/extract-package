@@ -696,6 +696,8 @@ if (!function_exists('generateHeaderHTML'))
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.js"></script>
                     <style type="text/css">
                          ' . generateFont() . '
+                         @page { margin: 0; }
+                        img{vertical-align: top;}
                         body{font-family: "Roboto", sans-serif;  background: white}
                         i.fas, i.far{margin-top: 2px}
                         ' . (($extension == 'pdf') ? 'p{line-height: 20px; background: white}' : 'p{line-height: 14px}') . '
