@@ -385,7 +385,7 @@ if (!function_exists('saveProtected'))
         else $path_save = public_path($path_file);
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML($content_html);
-        $pdf->setOptions(['dpi' => 120]);
+        $pdf->setOptions(['dpi' => 109]);
         $pdf->save($path_save);
     }
 }
@@ -425,7 +425,7 @@ if (!function_exists('handleHtmlBasic'))
             if (preg_match('/<img\s.*?\bsrc="(.*?)".*?>/si', $content_page, $matches))
             {
                 $image = $path_tmp . "/" . $name_file . "001.jpg";
-                removeBorderImage($image, $path_tmp, $name_file . '001.jpg', 2, 10);
+                removeBorderImage($image, $path_tmp, $name_file . '001.jpg', 2, 38);
                 if ($img_base64)
                 {
                     $image = base64Image($image);
@@ -678,6 +678,8 @@ if (!function_exists('generateHeaderHTML'))
                 <link rel="stylesheet" href="' . public_path('fonts/extract_cv/fontawesome-free-5.12.1-web/css/all.css') . '"> 
                 <style type="text/css">
                      ' . generateFont() . '
+                     @page { margin: 0; }
+                    img{vertical-align: top;}
                     body{font-family: "Roboto", sans-serif}
                     i.fas, i.far{margin-top: 2px}
                     ' . (($extension == 'pdf') ? '' . (($ocr) ? 'p{background: white; padding:4px 6px !important}' : 'p{line-height: 14px}') . '' : 'p{line-height: 14px}');
@@ -711,7 +713,7 @@ if (!function_exists('replaceAll'))
 {
     function replaceAll($content, $ocr = false)
     {
-        if ($ocr) $content = replaceFontSize($content);
+        $content = replaceFontSize($content, $ocr);
         return $content;
     }
 }
@@ -746,7 +748,7 @@ if (!function_exists('replaceCss'))
         $string = str_replace('<!--', '', $string);
         $string = str_replace('-->', '', $string);
         $string = preg_replace('/font-family.+?;/', '', $string);
-        if ($ocr) $string = replaceFontSize($string);
+        $string = replaceFontSize($string, $ocr);
         $string = preg_replace('~line\-height: ?([\d]+)px;~', '', $string);
         return $string;
     }
@@ -759,14 +761,38 @@ if (!function_exists('replaceCss'))
 
 if (!function_exists('replaceFontSize'))
 {
-    function replaceFontSize($string)
+    function replaceFontSize($string, $ocr)
     {
-        $string = str_replace('font-size:14px', 'font-size:16px', $string);
-        $string = str_replace('font-size:13px', 'font-size:16px', $string);
-        $string = str_replace('font-size:12px', 'font-size:16px', $string);
-        $string = str_replace('font-size:11px', 'font-size:16px', $string);
-        $string = str_replace('font-size:10px', 'font-size:16px', $string);
-        $string = str_replace('font-size:9px', 'font-size:16px', $string);
+        if ($ocr)
+        {
+            $string = str_replace('font-size:14px', 'font-size:16px', $string);
+            $string = str_replace('font-size:13px', 'font-size:16px', $string);
+            $string = str_replace('font-size:12px', 'font-size:16px', $string);
+            $string = str_replace('font-size:11px', 'font-size:16px', $string);
+            $string = str_replace('font-size:10px', 'font-size:16px', $string);
+            $string = str_replace('font-size:9px', 'font-size:16px', $string);
+            $string = str_replace('font-size: 14px', 'font-size:16px', $string);
+            $string = str_replace('font-size: 13px', 'font-size:16px', $string);
+            $string = str_replace('font-size: 12px', 'font-size:16px', $string);
+            $string = str_replace('font-size: 11px', 'font-size:16px', $string);
+            $string = str_replace('font-size: 10px', 'font-size:16px', $string);
+            $string = str_replace('font-size: 9px', 'font-size:18px', $string);
+        }
+        else
+        {
+            $string = str_replace('font-size:14px', 'font-size:14px', $string);
+            $string = str_replace('font-size:13px', 'font-size:14px', $string);
+            $string = str_replace('font-size:12px', 'font-size:14px', $string);
+            $string = str_replace('font-size:11px', 'font-size:14px', $string);
+            $string = str_replace('font-size:10px', 'font-size:14px', $string);
+            $string = str_replace('font-size:9px', 'font-size:14px', $string);
+            $string = str_replace('font-size: 14px', 'font-size:14px', $string);
+            $string = str_replace('font-size: 13px', 'font-size:14px', $string);
+            $string = str_replace('font-size: 12px', 'font-size:14px', $string);
+            $string = str_replace('font-size: 11px', 'font-size:14px', $string);
+            $string = str_replace('font-size: 10px', 'font-size:14px', $string);
+            $string = str_replace('font-size: 9px', 'font-size:14px', $string);
+        }
 
         return $string;
     }
