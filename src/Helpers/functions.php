@@ -56,7 +56,33 @@ if (!function_exists('regex'))
         if ($number_page == 1 && $extension == 'doc') $string = replaceSpace($string);
 
         $string = $img_not_regex .= $string;
+        $string = regexCompany($string);
 
+        return $string;
+    }
+}
+
+if (!function_exists('regexCompany'))
+{
+    function regexCompany($string)
+    {
+        preg_match('/©[\sa-zA-Z]+[^<>].[a-zA-Z]+[^<>]/', $string, $matches);
+        if (!empty($matches))
+        {
+            $string = str_replace($matches[0], '© ' . config('extract.change_cv_from'), $string);
+            return $string;
+        }
+        else
+        {
+            $xpath_ps     = "//p[contains(text(),'©')]/following-sibling::p[1]";
+            $xpath_ps_a   = "//p/a[contains(text(),'©')]/following-sibling::p[1]";
+
+            $array_result = xpathCompany($string, $xpath_ps);
+            if ($array_result[1] == $xpath_ps && $array_result[2]) return $array_result[0];
+
+            $array_result = xpathCompany($string, $xpath_ps_a);
+            if ($array_result[1] == $xpath_ps && $array_result[2]) return $array_result[0];
+        }
         return $string;
     }
 }
@@ -144,11 +170,9 @@ if (!function_exists('regexSkype'))
         $array_result = xpath($string, $xpath_p, true);
         if ($array_result[1] == $xpath_p && $array_result[2]) return $array_result[0];
 
-
         $xpath_pa     = "//p/a[contains(text(),'Skype')]";
         $array_result = xpath($string, $xpath_pa, true);
         if ($array_result[1] == $xpath_pa && $array_result[2]) return $array_result[0];
-
 
         $xpath_pb     = "//p/b[contains(text(),'Skype')]/parent::*/following-sibling::p[1]";
         $array_result = xpath($string, $xpath_pb);
@@ -211,6 +235,32 @@ if (!function_exists('xpath'))
                 $is_replace = true;
             }
         }
+        return [$string, $query, $is_replace];
+    }
+}
+
+if (!function_exists('xpathCompany'))
+{
+    function xpathCompany($string , $query)
+    {
+        $html_dom = new DOMDocument();
+        $string_tmp = mb_convert_encoding($string, 'HTML-ENTITIES', 'UTF-8');
+        @$html_dom->loadHTML($string_tmp);
+        $x_path = new DOMXPath($html_dom);
+        $nodes_p = $x_path->query($query);
+
+        $is_replace = false;
+
+        if ($nodes_p->length > 0)
+        {
+            foreach ($nodes_p as $node_p)
+            {
+                $value_node = $node_p->nodeValue;
+                $string = str_replace($value_node, config('extract.change_cv_from'), $string);
+                $is_replace = true;
+            }
+        }
+
         return [$string, $query, $is_replace];
     }
 }
@@ -411,7 +461,7 @@ if (!function_exists('handleHtmlBasic'))
             $html_file = getFile($path_tmp, $name_file);
 
             $content_page = file_get_contents($html_file);
-
+            //dd($content_page);
             if (preg_match_all('/<style\s.*?>(.*?)<\/style>/si', $content_page, $matches))
             {
                 if (count($matches[1]) == 2) $matches[1] = implode(' ', $matches[1]);
@@ -454,7 +504,6 @@ if (!function_exists('handleHtmlBasic'))
         else
         {
             $content_html .= closeHeader();
-
             foreach ($content_page as $key => $row_page)
             {
                 if (preg_match('/<img\s.*?\bsrc="(.*?)".*?>/si', $row_page, $matches))

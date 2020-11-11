@@ -26,5 +26,6 @@ return [
     'protected' => '[123cv.net protected]',
     'output_cv_protected' => 'cv_protected',//folder nằm trong thư mục public
     'path_ocrmypdf' => '/home/tranluong/.local/bin/ocrmypdf',
-    'ocrmypdf' => ''
+    'ocrmypdf' => '',
+    'change_cv_from' => 'offerjob.vn'
 ];
