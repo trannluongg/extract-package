@@ -18,14 +18,13 @@ if (!function_exists('regex'))
     function regex($string, $extension = 'pdf', $number_page = 2)
     {
         $img_not_regex = regexImg($string);
-        $string = str_replace($img_not_regex, '', $string);
+        $string        = str_replace($img_not_regex, 'imagenotregex', $string);
 
         $string = handleHtmlEntities($string);
 
         $string = preg_replace('/(\s+|0|\:|(\(*\+*[0-9]{1,2}\)*))\s*[0-9\.\s+]{8,}/', config('extract.protected'), $string);
         $string = preg_replace('/(0|(\(*\+[0-9]{1,2}\)*))\s*[0-9\.\-]{8,}/', config('extract.protected'), $string);
         $string = html_entity_decode($string);
-
         $string = regexSkype($string);
 
         $string = preg_replace('/<a.*?>/', '', $string);
@@ -55,7 +54,7 @@ if (!function_exists('regex'))
 
         if ($number_page == 1 && $extension == 'doc') $string = replaceSpace($string);
 
-        $string = $img_not_regex .= $string;
+        $string = str_replace('imagenotregex', $img_not_regex, $string);
         $string = regexCompany($string);
 
         return $string;
@@ -74,8 +73,8 @@ if (!function_exists('regexCompany'))
         }
         else
         {
-            $xpath_ps     = "//p[contains(text(),'©')]/following-sibling::p[1]";
-            $xpath_ps_a   = "//p/a[contains(text(),'©')]/following-sibling::p[1]";
+            $xpath_ps   = "//p[contains(text(),'©')]/following-sibling::p[1]";
+            $xpath_ps_a = "//p/a[contains(text(),'©')]/following-sibling::p[1]";
 
             $array_result = xpathCompany($string, $xpath_ps);
             if ($array_result[1] == $xpath_ps && $array_result[2]) return $array_result[0];
@@ -241,12 +240,12 @@ if (!function_exists('xpath'))
 
 if (!function_exists('xpathCompany'))
 {
-    function xpathCompany($string , $query)
+    function xpathCompany($string, $query)
     {
-        $html_dom = new DOMDocument();
+        $html_dom   = new DOMDocument();
         $string_tmp = mb_convert_encoding($string, 'HTML-ENTITIES', 'UTF-8');
         @$html_dom->loadHTML($string_tmp);
-        $x_path = new DOMXPath($html_dom);
+        $x_path  = new DOMXPath($html_dom);
         $nodes_p = $x_path->query($query);
 
         $is_replace = false;
@@ -256,7 +255,7 @@ if (!function_exists('xpathCompany'))
             foreach ($nodes_p as $node_p)
             {
                 $value_node = $node_p->nodeValue;
-                $string = str_replace($value_node, config('extract.change_cv_from'), $string);
+                $string     = str_replace($value_node, config('extract.change_cv_from'), $string);
                 $is_replace = true;
             }
         }
@@ -470,28 +469,15 @@ if (!function_exists('handleHtmlBasic'))
                 $matches[1]   = replaceCss($matches[1], $ocr);
                 $content_html .= $matches[1];
             }
+
             $content_html .= closeHeader();
-
-            if (preg_match('/<img\s.*?\bsrc="(.*?)".*?>/si', $content_page, $matches))
-            {
-                $image = $path_tmp . "/" . $name_file . "001.jpg";
-                removeBorderImage($image, $path_tmp, $name_file . '001.jpg', 2, 38);
-                if ($img_base64)
-                {
-                    $image = base64Image($image);
-                }
-                $img          = str_replace($matches[1], $image, $matches[0]);
-                $content_page = str_replace($matches[0], $img, $content_page);
-            }
-
+            $content_page = handelImageBorder($content_page, $path_tmp, $name_file, $img_base64);
             $content_page = checkWidthImage($content_page);
 
             if (preg_match('/<div\s.*?>(.*?)<\/div>/si', $content_page, $matches)) $content_page = $matches[1];
-
             if ($ocr) $content_page = regexOCR($content_page);
 
             $content_page = regex($content_page, $extension, 1);
-
             $content_html .= $content_page;
 
             if ($content_text != '')
@@ -506,34 +492,88 @@ if (!function_exists('handleHtmlBasic'))
             $content_html .= closeHeader();
             foreach ($content_page as $key => $row_page)
             {
-                if (preg_match('/<img\s.*?\bsrc="(.*?)".*?>/si', $row_page, $matches))
-                {
-                    if ($key < 10)
-                    {
-                        $image = $path_tmp . "/" . $name_file . "00" . $key . ".jpg";
-                        removeBorderImage($image, $path_tmp, $name_file . "00" . $key . ".jpg", 2, 2);
-                    }
-                    else
-                    {
-                        $image = $path_tmp . "/" . $name_file . "0" . $key . ".jpg";
-                        removeBorderImage($image, $path_tmp, $name_file . "0" . $key . ".jpg", 2, 2);
-                    }
-                    if ($img_base64)
-                    {
-                        $image = base64Image($image);
-                    }
-                    $img      = str_replace($matches[1], $image, $matches[0]);
-                    $row_page = str_replace($matches[0], $img, $row_page);
-                }
-
+                $row_page = handelMultiImageBorder($row_page, $path_tmp, $name_file, $key, $img_base64);
                 $row_page = checkWidthImage($row_page);
 
                 if (preg_match('/<div\s.*?>(.*?)<\/div>/si', $row_page, $matches)) $row_page = $matches[1];
 
                 if ($ocr) $row_page = regexOCR($row_page);
 
-                $row_page = regex($row_page, $extension);
+                $row_page     = regex($row_page, $extension);
+                $content_html .= $row_page;
 
+                if ($content_text != '')
+                {
+                    $content_text_p = handleContentOCR($content_text[$key]);
+                    $content_html   .= $content_text_p;
+                }
+            }
+        }
+        $content_html .= closeHTML();
+        $content_html = replaceAll($content_html, $ocr);
+
+        return $content_html;
+    }
+}
+
+
+/**
+ * @param array $content_page
+ * @param string $path_tmp
+ * @param string $name_file
+ * @param string $content_html
+ * @param boolean $ocr
+ * @param string $content_text
+ * @param boolean $extension
+ * @return string
+ */
+if (!function_exists('handleHtmlWKH'))
+{
+    function handleHtmlWKH($content_page = [], $path_tmp = '', $name_file = '', $content_html = '', $ocr = false,
+                           $content_text = '', $extension = 'pdf')
+    {
+        if (count($content_page) <= 1)
+        {
+            $html_file = getFile($path_tmp, $name_file);
+
+            $content_page = file_get_contents($html_file);
+            if (preg_match_all('/<style\s.*?>(.*?)<\/style>/si', $content_page, $matches))
+            {
+                if (count($matches[1]) == 2) $matches[1] = implode(' ', $matches[1]);
+                else $matches[1] = $matches[1][0];
+
+                $matches[1]   = replaceCss($matches[1], $ocr);
+                $content_html .= $matches[1];
+            }
+
+            $content_page = handelImageBorder($content_page, $path_tmp, $name_file, false);
+            $content_html .= closeHeader();
+            $content_page = checkWidthImage($content_page);
+
+            if (preg_match('/<div\s.*?>(.*?)<\/div>/si', $content_page, $matches)) $content_page = $matches[0];
+            if ($ocr) $content_page = regexOCR($content_page);
+
+            $content_page = regex($content_page, $extension, 1);
+            $content_html .= $content_page;
+
+            if ($content_text != '')
+            {
+                $content_text_p = handleContentOCR($content_text);
+                $content_html   .= $content_text_p;
+            }
+        }
+        else
+        {
+            $content_html .= closeHeader();
+            foreach ($content_page as $key => $row_page)
+            {
+                $row_page = handelMultiImageBorder($row_page, $path_tmp, $name_file, $key, false);
+                $row_page = checkWidthImage($row_page);
+
+                if (preg_match('/<div\s.*?>(.*?)<\/div>/si', $row_page, $matches)) $row_page = $matches[0];
+                if ($ocr) $row_page = regexOCR($row_page);
+
+                $row_page     = regex($row_page, $extension);
                 $content_html .= $row_page;
 
                 if ($content_text != '')
@@ -551,6 +591,65 @@ if (!function_exists('handleHtmlBasic'))
 }
 
 /**
+ * Note:
+ * @param string $string
+ * @param string $path_tmp
+ * @param string $name_file
+ * @param int $page
+ * @param bool $img_base64
+ * @return mixed|string
+ * User: TranLuong
+ * Date: 20/11/2020
+ */
+if (!function_exists('handelMultiImageBorder'))
+{
+    function handelMultiImageBorder($string = '', $path_tmp = '', $name_file = '', $page = 0, $img_base64 = false)
+    {
+        if (preg_match('/<img\s.*?\bsrc="(.*?)".*?>/si', $string, $matches))
+        {
+            if ($page < 10)
+            {
+                $image = $path_tmp . "/" . $name_file . "00" . $page . ".jpg";
+                removeBorderImage($image, $path_tmp, $name_file . "00" . $page . ".jpg", 2, 2);
+            }
+            else
+            {
+                $image = $path_tmp . "/" . $name_file . "0" . $page . ".jpg";
+                removeBorderImage($image, $path_tmp, $name_file . "0" . $page . ".jpg", 2, 2);
+            }
+
+            if ($img_base64)
+            {
+                $image = base64Image($image);
+            }
+
+            $img    = str_replace($matches[1], $image, $matches[0]);
+            $string = str_replace($matches[0], $img, $string);
+        }
+        return $string;
+    }
+}
+
+if (!function_exists('handelImageBorder'))
+{
+    function handelImageBorder($string = '', $path_tmp = '', $name_file = '', $img_base64 = false)
+    {
+        if (preg_match('/<img\s.*?\bsrc="(.*?)".*?>/si', $string, $matches))
+        {
+            $image = $path_tmp . "/" . $name_file . "001.jpg";
+            removeBorderImage($image, $path_tmp, $name_file . '001.jpg', 2, 2);
+            if ($img_base64)
+            {
+                $image = base64Image($image);
+            }
+            $img    = str_replace($matches[1], $image, $matches[0]);
+            $string = str_replace($matches[0], $img, $string);
+        }
+        return $string;
+    }
+}
+
+/**
  * @param array $content_page
  * @param string $path_file
  * @param string $name_file
@@ -561,7 +660,8 @@ if (!function_exists('handleHtmlBasic'))
  */
 if (!function_exists('handleHtmlAdvanced'))
 {
-    function handleHtmlAdvanced($content_page = [], $path_file = '', $name_file = '', $content_html = '', $content_html_image = '', $img_base64 = false)
+    function handleHtmlAdvanced($content_page = [], $path_file = '', $name_file = '', $content_html = '',
+                                $content_html_image = '', $img_base64 = false)
     {
         if (count($content_page) <= 1)
         {
@@ -581,22 +681,9 @@ if (!function_exists('handleHtmlAdvanced'))
 
             $content_html       .= closeHeader();
             $content_html_image .= closeHeader(false);
-
             $content_page_image = $content_page;
-
-            if (preg_match('/<img\s.*?\bsrc="(.*?)".*?>/si', $content_page, $matches))
-            {
-                $image = $path_file . "/" . $name_file . "001.jpg";
-                removeBorderImage($image, $path_file, $name_file . '001.jpg', 2, 10);
-                if ($img_base64)
-                {
-                    $image = base64Image($image);
-                }
-                $img          = str_replace($matches[1], $image, $matches[0]);
-                $content_page = str_replace($matches[0], $img, $content_page);
-            }
-
-            $content_page = checkWidthImage($content_page);
+            $content_page       = handelImageBorder($content_page, $path_file, $name_file, $img_base64);
+            $content_page       = checkWidthImage($content_page);
 
             if (preg_match('/<div\s.*?>(.*?)<\/div>/si', $content_page, $matches)) $content_page = $matches[1];
 
@@ -615,30 +702,10 @@ if (!function_exists('handleHtmlAdvanced'))
             foreach ($content_page as $key => $row_page)
             {
                 $row_page_v2 = $row_page;
-                if (preg_match('/<img\s.*?\bsrc="(.*?)".*?>/si', $row_page, $matches))
-                {
-                    if ($key < 10)
-                    {
-                        $image = $path_file . "/" . $name_file . "00" . $key . ".jpg";
-                        removeBorderImage($image, $path_file, $name_file . "00" . $key . ".jpg", 2, 2);
-                    }
-                    else
-                    {
-                        $image = $path_file . "/" . $name_file . "0" . $key . ".jpg";
-                        removeBorderImage($image, $path_file, $name_file . "0" . $key . ".jpg", 2, 2);
-                    }
-                    if ($img_base64)
-                    {
-                        $image = base64Image($image);
-                    }
-                    $img      = str_replace($matches[1], $image, $matches[0]);
-                    $row_page = str_replace($matches[0], $img, $row_page);
-                }
-
-                $row_page = checkWidthImage($row_page);
+                $row_page    = handelMultiImageBorder($row_page, $path_file, $name_file, $key, $img_base64);
+                $row_page    = checkWidthImage($row_page);
 
                 if (preg_match('/<div\s.*?>(.*?)<\/div>/si', $row_page, $matches)) $row_page = $matches[1];
-
                 if (preg_match('/<div\s.*?>(.*?)<\/div>/si', $row_page_v2, $matches)) $row_page_v2 = $matches[0];
 
                 $row_page           = regex($row_page);
@@ -730,8 +797,9 @@ if (!function_exists('generateHeaderHTML'))
                      @page { margin: 0; }
                     img{vertical-align: top;}
                     body{font-family: "Roboto", sans-serif}
-                    i.fas, i.far{margin-top: 2px}
-                    ' . (($extension == 'pdf') ? '' . (($ocr) ? 'p{background: white; padding:4px 6px !important}' : 'p{line-height: 14px}') . '' : 'p{line-height: 14px}');
+                    html, body { margin: 0;padding: 0;}
+                    i.fas, i.far{margin-top: 2px} i.fa-circle{font-size:5px}
+                    ' . (($extension == 'pdf') ? '' . (($ocr) ? 'p{background: white; padding:4px 6px !important}' : 'p{line-height: 20px}') . '' : 'p{line-height: 20px}');
         }
         else
         {
@@ -748,7 +816,8 @@ if (!function_exists('generateHeaderHTML'))
                          @page { margin: 0; }
                         img{vertical-align: top;}
                         body{font-family: "Roboto", sans-serif;  background: white}
-                        i.fas, i.far{margin-top: 2px}
+                        html, body { margin: 0;padding: 0;}
+                        i.fas, i.far{margin-top: 2px} i.fa-circle{font-size:5px}
                         ' . (($extension == 'pdf') ? 'p{line-height: 20px; background: white}' : 'p{line-height: 14px}') . '
                         div{page-break-after: always; margin: 0 auto 15px auto}
         ';

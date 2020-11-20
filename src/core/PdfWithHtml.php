@@ -144,7 +144,7 @@ class PdfWithHtml
         return $this;
     }
 
-    protected function convertEntities($subject, $path_file)
+    public function convertEntities($subject, $path_file)
     {
         $entities = array(
             '€' => '&#0128;',

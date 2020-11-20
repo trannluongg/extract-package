@@ -8,6 +8,7 @@
 Route::group(['namespace' => 'WorkableCV\Extract\Http\Controllers'], function ()
 {
     Route::get('/extract', 'ExtractController@extract');
+    Route::get('/extract-wkh', 'ExtractController@extractWkh');
     Route::get('/extract-pdf', 'ExtractController@generate');
     Route::get('/extract-doc', 'ExtractController@convertDocToPdf');
 });

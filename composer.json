@@ -15,7 +15,8 @@
         "illuminate/support": "^5.5|^6",
         "dompdf/dompdf": "0.8.5",
         "pelago/emogrifier": "^2.0.0",
-        "symfony/process": "4.3.4"
+        "symfony/process": "4.3.4",
+        "knplabs/knp-snappy": "1.2"
     },
     "require-dev": {
         "ext-dom": "*",
