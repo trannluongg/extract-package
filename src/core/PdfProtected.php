@@ -178,8 +178,9 @@ class PdfProtected extends Pdf
         }
         createFolder($path, $path_save);
 
-        $file_pdf_name      = generateNewFileName($name_file);
-        $path_pdf_protected = $path . '/' . $file_pdf_name . '.pdf';
+        $file_pdf_name           = generateNewFileName($name_file);
+        $path_pdf_protected      = $path . '/' . $file_pdf_name . '.pdf';
+        $path_full_pdf_protected = ($path_save == 1) ? public_path($path_pdf_protected) : storage_path($path_pdf_protected);
 
         $cv_info            = $this->handelInfoCV($name_file, $ocr, $flag_text, $extension);
         $content_page       = $cv_info['content_page'];
@@ -200,7 +201,7 @@ class PdfProtected extends Pdf
 
         try
         {
-            $snappy->generateFromHtml($content_html, $path_pdf_protected, $options);
+            $snappy->generateFromHtml($content_html, $path_full_pdf_protected, $options);
             deleteAll($path_tmp);
             return $path_pdf_protected;
         } catch (\Exception $exception)
