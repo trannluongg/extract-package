@@ -39,7 +39,7 @@ class ExtractController extends Controller
     public function extractWkh(Request $request)
     {
         $name_file = $request->get('name');
-        $file = public_path('upload_cv/2020/08/30/' . $name_file . '.pdf');
+        $file = public_path('upload_cv/2020/08/28/' . $name_file . '.pdf');
 
         $options_check = config('extract.options_extract');
         $pdf           = new PdfToHtml($file, $options_check);
@@ -121,7 +121,7 @@ class ExtractController extends Controller
         $pdfToImage           = new PdfToImage();
         try
         {
-            $result_convert_image = $pdfToImage->generatePdfImage(public_path($path_cv_protected), $output_dir_image);
+            $result_convert_image = $pdfToImage->generatePdfImage(public_path($path_cv_protected), $output_dir_image, 'jpeg');
         } catch (\Exception $e)
         {
             Log::info($e->getMessage());

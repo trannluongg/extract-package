@@ -14,11 +14,11 @@ use Symfony\Component\Process\Process;
 
 class PdfToImage
 {
-    public function generatePdfImage($path_pdf = '', $output_dir = '')
+    public function generatePdfImage($path_pdf = '', $output_dir = '', $image_extension = 'jpeg')
     {
         if (!file_exists($path_pdf)) throw new \Exception('File do not exit');
 
-        $process = new Process([config('extract.path_pdftoimage'), $path_pdf , $output_dir, '-png']);
+        $process = new Process([config('extract.path_pdftoimage'), $path_pdf , $output_dir, '-' . $image_extension]);
         try {
             $process->mustRun();
             return $process->getOutput();
