@@ -45,6 +45,7 @@ class DocToPdf
         {
             $process = new Process(['lowriter',  '--convert-to', 'pdf', $path_file_doc, '--outdir', $output_dir_pdf]);
             try {
+                $process->setTimeout(180);
                 $process->mustRun();
                 return $process->getOutput();
             } catch (ProcessFailedException $exception) {

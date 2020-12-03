@@ -75,6 +75,7 @@ class PdfOCR
         ]);
 
         try {
+            $process->setTimeout(180);
             $process->mustRun();
             return $process->getOutput();
         } catch (ProcessFailedException $exception) {
