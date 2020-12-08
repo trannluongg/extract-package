@@ -43,7 +43,7 @@ class DocToPdf
     {
         if (file_exists($path_file_doc))
         {
-            $process = new Process(['lowriter',  '--convert-to', 'pdf', $path_file_doc, '--outdir', $output_dir_pdf]);
+            $process = new Process([config('extract.path_lowriter'),  '--convert-to', 'pdf', $path_file_doc, '--outdir', $output_dir_pdf]);
             try {
                 $process->setTimeout(180);
                 $process->mustRun();

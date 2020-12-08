@@ -28,6 +28,7 @@ return [
     'path_ocrmypdf'       => '/home/tranluong/.local/bin/ocrmypdf',
     'path_wkhtmltopdf'    => '/usr/local/bin/wkhtmltopdf',
     'path_pdftoimage'     => '/usr/bin/pdftoppm',
+    'path_lowriter'       => '/usr/bin/lowriter',
     'ocrmypdf'            => '',
     'change_cv_from'      => 'offerjob.vn'
 ];
